@@ -12,7 +12,6 @@ import 'semantic-ui-css/semantic.min.css'
 import { SubstrateContextProvider, useSubstrateState } from './substrate-lib'
 import { DeveloperConsole } from './substrate-lib/components'
 
-import AccountSelector from './AccountSelector'
 import Balances from './Balances'
 import BlockNumber from './BlockNumber'
 import Events from './Events'
@@ -22,6 +21,16 @@ import NodeInfo from './NodeInfo'
 import TemplateModule from './TemplateModule'
 import Transfer from './Transfer'
 import Upgrade from './Upgrade'
+import Header from "./components/menu/header";
+import Home from "./components/pages/home";
+import { createGlobalStyle } from 'styled-components';
+import {Route} from "react-router-dom";
+import ScrollToTop from "./components/menu/ScrollToTop";
+const GlobalStyles = createGlobalStyle`
+  :root {
+    scroll-behavior: unset;
+  }
+`;
 
 function Main() {
   const { apiState, apiError, keyringState } = useSubstrateState()
@@ -59,9 +68,18 @@ function Main() {
 
   return (
     <div ref={contextRef}>
-      <Sticky context={contextRef}>
-        <AccountSelector />
-      </Sticky>
+      <div className={"wrapper"}>
+        <GlobalStyles />
+        <Sticky context={contextRef}>
+          <Header />
+        </Sticky>
+        <Route>
+          <Route path="/home" element={<Home />} />
+        </Route>
+
+      </div>
+
+
       <Container>
         <Grid stackable columns="equal">
           <Grid.Row stretched>
@@ -85,6 +103,7 @@ function Main() {
             <TemplateModule />
           </Grid.Row>
         </Grid>
+        <ScrollToTop />
       </Container>
       <DeveloperConsole />
     </div>
