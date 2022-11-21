@@ -11,15 +11,18 @@ import './assets/style_grey.scss';
 import App from './App'
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter } from "react-router-dom";
+import store from "./store";
+import {Provider} from "react-redux";
 
 //redux store
 
 
 ReactDOM.render(
-
+    <Provider store={store}>
         <BrowserRouter>
             <App />
-        </BrowserRouter>,
+        </BrowserRouter>
+    </Provider>,
 
     document.getElementById('root'));
 // If you want your app to work offline and load faster, you can change

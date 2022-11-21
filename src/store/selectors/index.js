@@ -5,15 +5,10 @@ import { createSelector, createStructuredSelector } from "reselect";
 export const nftBreakdownState = (state) => state.NFT.nftBreakdown;
 export const nftShowcaseState = (state) => state.NFT.nftShowcase;
 export const nftDetailState = (state) => state.NFT.nftDetail;
-export const hotCollectionsState = (state) => state.hotCollection.hotCollections;
+export const hotCollectionsState = (state) => state.hotCollections.hotCollections;
 export const authorsState = (state) => state.authors.authorList;
 export const authorRankingsState = (state) => state.authors.authorRanking;
 
-//blogs
-export const blogsState = (state) => state.blogs.blogPosts;
-export const recentPostsState = (state) => state.blogs.recentPosts;
-export const tagsState = (state) => state.blogs.tags;
-export const commentsState = (state) => state.blogs.comments;
 
 export const auctionedNfts = createSelector(nftBreakdownState, ( nfts ) => {
     if(!nfts.data) {

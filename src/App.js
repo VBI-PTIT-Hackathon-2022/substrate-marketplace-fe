@@ -1,6 +1,5 @@
 import React, { createRef } from 'react'
 import {
-  Container,
   Dimmer,
   Loader,
   Grid,
@@ -12,20 +11,13 @@ import 'semantic-ui-css/semantic.min.css'
 import { SubstrateContextProvider, useSubstrateState } from './substrate-lib'
 import { DeveloperConsole } from './substrate-lib/components'
 
-import Balances from './Balances'
-import BlockNumber from './BlockNumber'
-import Events from './Events'
-import Interactor from './Interactor'
-import Metadata from './Metadata'
-import NodeInfo from './NodeInfo'
-import TemplateModule from './TemplateModule'
-import Transfer from './Transfer'
-import Upgrade from './Upgrade'
 import Header from "./components/menu/header";
 import Home from "./components/pages/home";
+import Create from './components/pages/create';
 import { createGlobalStyle } from 'styled-components';
-import {Route} from "react-router-dom";
+import {Route, Routes} from "react-router-dom";
 import ScrollToTop from "./components/menu/ScrollToTop";
+import Mint from "./components/pages/mint";
 const GlobalStyles = createGlobalStyle`
   :root {
     scroll-behavior: unset;
@@ -73,38 +65,40 @@ function Main() {
         <Sticky context={contextRef}>
           <Header />
         </Sticky>
-        <Route>
+        <Routes>
           <Route path="/home" element={<Home />} />
-        </Route>
-
+          <Route path={"/create"} element={<Create />} />
+          <Route path={"/mint"} element={<Mint />} />
+        </Routes>
+        <ScrollToTop />
       </div>
 
 
-      <Container>
-        <Grid stackable columns="equal">
-          <Grid.Row stretched>
-            <NodeInfo />
-            <Metadata />
-            <BlockNumber />
-            <BlockNumber finalized />
-          </Grid.Row>
-          <Grid.Row stretched>
-            <Balances />
-          </Grid.Row>
-          <Grid.Row>
-            <Transfer />
-            <Upgrade />
-          </Grid.Row>
-          <Grid.Row>
-            <Interactor />
-            <Events />
-          </Grid.Row>
-          <Grid.Row>
-            <TemplateModule />
-          </Grid.Row>
-        </Grid>
-        <ScrollToTop />
-      </Container>
+      {/*<Container>*/}
+      {/*  <Grid stackable columns="equal">*/}
+      {/*    <Grid.Row stretched>*/}
+      {/*      <NodeInfo />*/}
+      {/*      <Metadata />*/}
+      {/*      <BlockNumber />*/}
+      {/*      <BlockNumber finalized />*/}
+      {/*    </Grid.Row>*/}
+      {/*    <Grid.Row stretched>*/}
+      {/*      <Balances />*/}
+      {/*    </Grid.Row>*/}
+      {/*    <Grid.Row>*/}
+      {/*      <Transfer />*/}
+      {/*      <Upgrade />*/}
+      {/*    </Grid.Row>*/}
+      {/*    <Grid.Row>*/}
+      {/*      <Interactor />*/}
+      {/*      <Events />*/}
+      {/*    </Grid.Row>*/}
+      {/*    <Grid.Row>*/}
+      {/*      <TemplateModule />*/}
+      {/*    </Grid.Row>*/}
+      {/*  </Grid>*/}
+      {/*  */}
+      {/*</Container>*/}
       <DeveloperConsole />
     </div>
   )

@@ -65,8 +65,8 @@ export const getComments = asyncAction(
 
 export const clearNfts = action('nft/CLEAR_ALL_NFTS')();
 export const clearFilter = action('nft/CLEAR_FILTER')();
-export const filterCategories = action('nft/FILTER_CATEGORIES')();
-export const filterStatus = action('nft/FILTER_STATUS')();
-export const filterItemsType = action('nft/FILTER_ITEMS_TYPE')();
-export const filterCollections = action('nft/FILTER_COLLECTIONS')();
-export const filterNftTitle = action('nft/FILTER_NFT_TITLE')();
+// export const filterCategories = action('nft/FILTER_CATEGORIES')();
+// export const filterStatus = action('nft/FILTER_STATUS')();
+// export const filterItemsType = action('nft/FILTER_ITEMS_TYPE')();
+// export const filterCollections = action('nft/FILTER_COLLECTIONS')();
+// export const filterNftTitle = action('nft/FILTER_NFT_TITLE')();

@@ -1,9 +1,7 @@
-import React, {useState, useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import {CopyToClipboard} from 'react-copy-to-clipboard'
 
-import {
-    Button, Dropdown, Icon, Label,
-} from 'semantic-ui-react'
+import {Button, Dropdown, Icon, Label,} from 'semantic-ui-react'
 
 import {useSubstrate, useSubstrateState} from '../../substrate-lib'
 import {Link, useMatch, useResolvedPath} from "react-router-dom";
@@ -15,12 +13,12 @@ const acctAddr = acct => (acct ? acct.address : '')
 
 const NavLink = (props) => {
     let resolved = useResolvedPath(props.to);
-    let match = useMatch({ path: resolved.pathname, end: true });
+    let match = useMatch({path: resolved.pathname, end: true});
 
     return (
         <Link
             {...props}
-            className={ match ? 'active' : 'non-active'}
+            className={match ? 'active' : 'non-active'}
         />
     )
 };
@@ -67,14 +65,13 @@ function Main(props) {
 
     return (
         <header className={`navbar white active`} id="myHeader">
-        <div className="container">
+            <div className="container">
 
                 <div className='logo px-0'>
                     <div className="navbar-title navbar-item">
-                        <NavLink to={"./"}>
-                            <img alt="" className="logo-2"
-                                 src={process.env.PUBLIC_URL + "/assets/polkadot_yellow.png"}/>
-                            &nbsp;&nbsp; NFT.owl
+                        <NavLink to={"/home"}>
+                            <img alt="" className="logo-2" sizes={"small"}
+                                 src={process.env.PUBLIC_URL + "/assets/logo.png"}/>
                         </NavLink>
                     </div>
                 </div>
@@ -83,17 +80,22 @@ function Main(props) {
                            type="text"/>
                 </div>
                 <div className="navbar-item">
-                    <NavLink to="/" >
+                    <NavLink to="/explorer">
                         Explorer
                     </NavLink>
                 </div>
                 <div className="navbar-item">
-                    <NavLink to="/" >
+                    <NavLink to="/collection">
                         Collection
                     </NavLink>
                 </div>
-            <div className='mainside'>
                 <div className="navbar-item">
+                    <NavLink to="/mint">
+                        Mint your NFT
+                    </NavLink>
+                </div>
+                <div className='mainside'>
+                    <div className="navbar-item">
                         {!currentAccount ? (<span>
               Create an account with Polkadot-JS Extension (
               <a target="_blank" rel="noreferrer" href={CHROME_EXT_URL}>
@@ -109,8 +111,9 @@ function Main(props) {
                             <Button
                                 basic
                                 circular
+                                size={"large"}
                                 icon="user"
-                                color={currentAccount ? 'yellow' : 'grey'}
+                                color={currentAccount ? 'purple' : 'grey'}
                                 margin={"3px"}
                             />
                         </CopyToClipboard>
@@ -128,8 +131,8 @@ function Main(props) {
                         <BalanceAnnotation/>
                     </div>
                 </div>
-        </div>
-</header>)
+            </div>
+        </header>)
 }
 
 function BalanceAnnotation(props) {
@@ -150,7 +153,7 @@ function BalanceAnnotation(props) {
     }, [api, currentAccount])
 
     return currentAccount ? (<Label pointing="left">
-        <Icon name="money" color="green"/>
+        <Icon name="money" color="purple" size={"large"}/>
         {accountBalance}
     </Label>) : null
 }

@@ -3,7 +3,6 @@ import SliderMainParticleGrey from '../components/SliderMainParticleGrey';
 import CarouselCollectionRedux from '../components/CarouselCollectionReduxNew';
 import CarouselNewRedux from '../components/CarouselNewReduxNew';
 import AuthorListRedux from '../components/AuthorListRedux';
-import Catgor from '../components/Catgor';
 import Footer from '../components/footer';
 import { createGlobalStyle } from 'styled-components';
 const GlobalStyles = createGlobalStyle`
@@ -56,10 +55,6 @@ const Home= () => (
         <GlobalStyles />
         <section className="jumbotron breadcumb no-bg h-vh" style={{backgroundImage: `url(${'./img/background/11.jpg'})`}}>
             <SliderMainParticleGrey/>
-        </section>
-
-        <section className='container'>
-            <Catgor/>
         </section>
 
         <section className='pb60 yelbg'>

@@ -31,13 +31,13 @@ const slidermainparticle= () => (
     <div className="row align-items-center">
           <div className="col-md-6">
               <div className="spacer-single"></div>
-              <h6> <span className="text-uppercase color">Gigaland Market</span></h6>
+              <h1> <span className="text-uppercase color">NFT.owl </span></h1>
               <Reveal className='onStep' keyframes={fadeInUp} delay={300} duration={900} triggerOnce>
-              <h1 className="col-white">Create, sell or collect digital items.</h1>
+              <h1 className="col-white">Create, trade and rent NFT.</h1>
               </Reveal>
               <Reveal className='onStep' keyframes={fadeInUp} delay={600} duration={900} triggerOnce>
               <p className="lead col-white">
-              Unit of data stored on a digital ledger, called a blockchain, that certifies a digital asset to be unique and therefore not interchangeable
+                  Experience a brand new NFT world, where you can rent assets without collaterals.
               </p>
               </Reveal>
               <div className="spacer-10"></div>
@@ -52,7 +52,7 @@ const slidermainparticle= () => (
                   <div className="row">
                           <div className="col-lg-4 col-md-6 col-sm-4 mb30">
                               <div className="de_count text-left">
-                                  <h3><span>94215</span></h3>
+                                  <h3><span>90+</span></h3>
                                   <h5 className="id-color">Collectibles</h5>
                               </div>
                           </div>
@@ -60,13 +60,13 @@ const slidermainparticle= () => (
                           <div className="col-lg-4 col-md-6 col-sm-4 mb30">
                               <div className="de_count text-left">
                                   <h3><span>27</span>k</h3>
-                                  <h5 className="id-color">Auctions</h5>
+                                  <h5 className="id-color">Rentings</h5>
                               </div>
                           </div>
 
                           <div className="col-lg-4 col-md-6 col-sm-4 mb30">
                               <div className="de_count text-left">
-                                  <h3><span>4</span>k</h3>
+                                  <h3><span>10+</span>k</h3>
                                   <h5 className="id-color">NFT Artist</h5>
                               </div>
                           </div>
@@ -76,7 +76,7 @@ const slidermainparticle= () => (
           </div>
           <div className="col-md-6 xs-hide">
           <Reveal className='onStep d-inline' keyframes={inline} delay={300} duration={1200} triggerOnce>
-              <img src="./img/misc/women-with-vr.png" className="img-fluid" alt=""/>
+              <img src={process.env.PUBLIC_URL +"/img/misc/women-with-vr.png"} className="img-fluid" alt=""/>
           </Reveal>
           </div>
       </div>
