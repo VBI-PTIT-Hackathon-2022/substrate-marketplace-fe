@@ -1,19 +1,7 @@
 import { pinJSONToIPFS } from "./pinata.js";
-import {useSubstrateState} from "../../substrate-lib";
-import {useState} from "react";
 
-export const mintNFT = async (url, name, description) => {
+export const metadata = async (url, name, description) => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    const { api, currentAccount } = useSubstrateState();
-    // The transaction submission status
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const [status, setStatus] = useState('');
-    // The currently stored value
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const [currentValue, setCurrentValue] = useState(0)
-
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const [formValue, setFormValue] = useState(0)
 
     if (url.trim() === "" || name.trim() === "" || description.trim() === "") {
         return {
@@ -36,16 +24,12 @@ export const mintNFT = async (url, name, description) => {
         };
     }
     const tokenURI = pinataResponse.pinataUrl;
-
-    // Execute extrinsic
-
+    console.log(tokenURI)
     try {
 
         return {
-            success: true,
-            status:
-                "Check out your transaction on Etherscan: https://ropsten.etherscan.io/tx/" +
-                txHash,
+            uri:tokenURI,
+            success: true
         };
     } catch (error) {
         return {

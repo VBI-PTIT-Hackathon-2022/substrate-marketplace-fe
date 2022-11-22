@@ -261,10 +261,10 @@ function TxButton({
   }
 
   return (
-    <Button
+    <button
       basic
-      color={color}
-      style={style}
+      id="mintButton"
+      className="btn-main"
       type="submit"
       onClick={transaction}
       disabled={
@@ -278,7 +278,7 @@ function TxButton({
       }
     >
       {label}
-    </Button>
+    </button>
   )
 }
 
