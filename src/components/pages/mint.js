@@ -1,8 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
-import {
-    getCurrentWalletConnected,
-    mintNFT,
-} from "../../core/nft/interact";
+import React, { useState, useCallback } from "react";
 import { createGlobalStyle } from 'styled-components';
 import ColumnNewMint from '../components/ColumnNewMint';
 import api from "../../core/api";
@@ -53,7 +49,6 @@ const GlobalStyles = createGlobalStyle`
 `;
 
 const Minter = (props) => {
-    const [walletAddress, setWallet] = useState("");
     const [status, setStatus] = useState("");
 
     const [name, setName] = useState("");
@@ -63,48 +58,12 @@ const Minter = (props) => {
     const [manualInput, setManualInput] = useState(false);
     const [isMinting, setisMinting] = useState(false);
 
-    useEffect(() => {
-        async function getExistingWallet() {
-            const { address, status } = await getCurrentWalletConnected();
 
-            setWallet(address);
-            setStatus(status);
-
-            addWalletListener();
-        }
-
-        getExistingWallet();
-    }, []);
-
-    function addWalletListener() {
-        if (window.ethereum) {
-            window.ethereum.on("accountsChanged", (accounts) => {
-                if (accounts.length > 0) {
-                    setWallet(accounts[0]);
-                    // setStatus("Fill in the text-field above.");
-                } else {
-                    setWallet("");
-                    setStatus("🦊 Connect to Metamask using the top right button.");
-                }
-            });
-        } else {
-            setStatus(
-                <p>
-                    {" "}
-                    🦊{" "}
-                    <a target="_blank" rel="noreferrer" href={`https://metamask.io/download.html`}>
-                        You must install Metamask, a virtual Ethereum wallet, in your
-                        browser.
-                    </a>
-                </p>
-            );
-        }
-    }
-
-    const connectWalletPressed = async () => {
-        const walletResponse = await connectWallet();
-        setStatus(walletResponse.status);
-        setWallet(walletResponse.address);
+    const toggleInput = () => {
+        setManualInput(!manualInput)
+        setName("");
+        setDescription("");
+        setURL("");
     };
 
     const onMintPressed = async () => {
@@ -119,12 +78,6 @@ const Minter = (props) => {
         setisMinting(false);
     };
 
-    const toggleInput = () => {
-        setManualInput(!manualInput)
-        setName("");
-        setDescription("");
-        setURL("");
-    };
 
     const onSelectNft = (nft) => {
         setName(nft.title);
@@ -198,7 +151,15 @@ const Minter = (props) => {
                                             <span>NFT Name: { name }</span>
                                             <br />
                                             <br />
-                                            <TxButton id="mintButton" className="btn-main" onClick={onMintPressed}>
+                                            <TxButton id="mintButton" className="btn-main" label="Mint NFT"
+                                                      type="SIGNED-TX"
+                                                      setStatus={setStatus}
+                                                      attrs={{
+                                                          palletRpc: 'nftCurrency',
+                                                          callable: 'mint',
+                                                          inputParams: [formValue],
+                                                          paramFields: [true],
+                                                      }}>
                                                 Proceed to Mint
                                             </TxButton>
                                             <br />
