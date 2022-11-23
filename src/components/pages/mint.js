@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, {useCallback, useState} from "react";
 import {createGlobalStyle} from 'styled-components';
 import ColumnNewMint from '../components/ColumnNewMint';
 import api from "../../core/api";
@@ -62,19 +62,13 @@ const GlobalStyles = createGlobalStyle`
 
 export default function Minter(props) {
     const [status, setStatus] = useState("");
-    const [walletAddress, setWallet] = useState("");
+    const [walletAddress, setWallet] = useState("0")
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [url, setURL] = useState("");
     const [tokenURI, setTokenURI] = useState("");
     const [manualInput, setManualInput] = useState(false);
     const {currentAccount} = useSubstrateState()
-
-    useEffect(() => {
-        console.log(currentAccount)
-        setWallet("123")
-    })
-
 
     const toggleInput = () => {
         setManualInput(!manualInput)
@@ -84,15 +78,10 @@ export default function Minter(props) {
     };
 
     const onMintPressed = async () => {
-        const {uri, success} = await metadata(url, name, description);
+        const {uri} = await metadata(url, name, description);
+        setWallet(Buffer.from(currentAccount.addressRaw).toString('hex'));
         setStatus(status);
         setTokenURI(uri);
-        if (success) {
-            setName("");
-            setDescription("");
-            setURL("");
-        }
-
     }
 
 
@@ -167,28 +156,33 @@ export default function Minter(props) {
                                         <span>NFT Name: {name}</span>
                                         <br/>
                                         <br/>
-
-
                                         <div  className="d-flex align-items-start" >
                                             <button id="mintButton" className="btn-main" onClick={onMintPressed}>
                                                 Get Metadata
                                             </button>
                                             &nbsp;&nbsp;&nbsp;&nbsp;
-                                            <TxButton id="mintButton" className="btn-main" label="Mint NFT"
-                                                      type="SIGNED-TX"
-                                                      setStatus={setStatus}
-                                                      attrs={{
-                                                          palletRpc: 'nftCurrency',
-                                                          callable: 'mint',
-                                                          inputParams: [walletAddress, tokenURI],
-                                                          paramFields: [true],
-                                                      }}>
-                                                Proceed to Mint
-                                            </TxButton>
+                                            {tokenURI!=="" &&
+                                                <TxButton id="mintButton" className="btn-main" label="Mint NFT"
+                                                          type="SIGNED-TX"
+                                                          setStatus={setStatus}
+                                                          attrs={{
+                                                              palletRpc: 'nftCurrency',
+                                                              callable: 'mintTo',
+                                                              inputParams: ["0x"+walletAddress, tokenURI],
+                                                              paramFields: [true,true],
+                                                          }}>
+                                                    Proceed to Mint
+                                                </TxButton>}
+
                                         </div>
                                         <br/>
                                     </>
                                 }
+                                {tokenURI!=="" &&
+                                    <p id="token_uri">
+                                        Your token metadata is online now on {tokenURI}
+                                    </p>}
+
                                 <p id="status">
                                     {status}
                                 </p>

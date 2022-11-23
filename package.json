@@ -3,10 +3,6 @@
   "version": "0.1",
   "private": true,
   "license": "Unlicense",
-  "homepage": "https://substrate-developer-hub.github.io/substrate-front-end-template",
-  "bugs": {
-    "url": "https://github.com/substrate-developer-hub/substrate-front-end-template/issues"
-  },
   "keywords": [
     "substrate",
     "substrate-ui",
@@ -25,6 +21,7 @@
   },
   "dependencies": {
     "@emotion/react": "^11.10.5",
+    "@pinata/sdk": "^2.1.0",
     "@polkadot/api": "^7.10.1",
     "@polkadot/extension-dapp": "^0.42.7",
     "@polkadot/keyring": "^8.4.1",
@@ -98,6 +95,15 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "browser": {
+    "crypto": false,
+    "fs": false,
+    "net": false,
+    "os": false,
+    "path": false,
+    "stream": false,
+    "tls": false
   },
   "packageManager": "yarn@3.1.1"
 }

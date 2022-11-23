@@ -1,12 +1,11 @@
-import { pinJSONToIPFS } from "./pinata.js";
+import {pinJSONToIPFS} from "./pinata";
 
 export const metadata = async (url, name, description) => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
 
     if (url.trim() === "" || name.trim() === "" || description.trim() === "") {
         return {
-            success: false,
-            status: "Please make sure all fields are completed before minting.",
+            success: false, status: "Please make sure all fields are completed before minting.",
         };
     }
 
@@ -16,25 +15,17 @@ export const metadata = async (url, name, description) => {
     metadata.image = url;
     metadata.description = description;
 
-    const pinataResponse = await pinJSONToIPFS(metadata);
-    if (!pinataResponse.success) {
-        return {
-            success: false,
-            status: "Something went wrong while uploading your tokenURI.",
-        };
-    }
-    const tokenURI = pinataResponse.pinataUrl;
-    console.log(tokenURI)
-    try {
 
+    const pinataResponse = await pinJSONToIPFS(metadata);
+    console.log(pinataResponse.pinataUrl)
+    const tokenURI = pinataResponse.pinataUrl;
+    try {
         return {
-            uri:tokenURI,
-            success: true
+            uri: tokenURI, status:"Your metadata is here"
         };
     } catch (error) {
         return {
-            success: false,
-            status: "Something went wrong: " + error.message,
+            success: false, status: "Something went wrong: " + error.message,
         };
     }
 };

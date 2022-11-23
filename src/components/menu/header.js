@@ -69,7 +69,7 @@ function Main(props) {
 
                 <div className='logo px-0'>
                     <div className="navbar-title navbar-item">
-                        <NavLink to={"/home"}>
+                        <NavLink to={"/"}>
                             <img alt="" className="logo-2" sizes={"small"}
                                  src={process.env.PUBLIC_URL + "/assets/logo.png"}/>
                         </NavLink>

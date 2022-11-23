@@ -66,39 +66,12 @@ function Main() {
           <Header />
         </Sticky>
         <Routes>
-          <Route path="/home" element={<Home />} />
+          <Route path="/" element={<Home />} />
           <Route path={"/create"} element={<Create />} />
           <Route path={"/mint"} element={<Mint />} />
         </Routes>
         <ScrollToTop />
       </div>
-
-
-      {/*<Container>*/}
-      {/*  <Grid stackable columns="equal">*/}
-      {/*    <Grid.Row stretched>*/}
-      {/*      <NodeInfo />*/}
-      {/*      <Metadata />*/}
-      {/*      <BlockNumber />*/}
-      {/*      <BlockNumber finalized />*/}
-      {/*    </Grid.Row>*/}
-      {/*    <Grid.Row stretched>*/}
-      {/*      <Balances />*/}
-      {/*    </Grid.Row>*/}
-      {/*    <Grid.Row>*/}
-      {/*      <Transfer />*/}
-      {/*      <Upgrade />*/}
-      {/*    </Grid.Row>*/}
-      {/*    <Grid.Row>*/}
-      {/*      <Interactor />*/}
-      {/*      <Events />*/}
-      {/*    </Grid.Row>*/}
-      {/*    <Grid.Row>*/}
-      {/*      <TemplateModule />*/}
-      {/*    </Grid.Row>*/}
-      {/*  </Grid>*/}
-      {/*  */}
-      {/*</Container>*/}
       <DeveloperConsole />
     </div>
   )

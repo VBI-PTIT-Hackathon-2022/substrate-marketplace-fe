@@ -1,15 +1,7 @@
 const api = {
-    baseUrl: '/mockdata', //mock data base folder
-    nfts: '/nfts.json',
-    nftShowcases: '/nft_showcases.json',
-    authors: '/authors.json',
-    authorsSales: '/author_ranks.json',
-    hotCollections: '/hot-collections.json',
-    contactUs: '/contact-forms',
-    blogs: '/blog-posts',
-    recent: '/blog-posts/recent.json',
-    comments: '/blog-posts/comments.json',
-    tags: '/blog-posts/tags.json',
+    baseUrl: 'http://localhost:3000', //mock data base folder
+    nfts: '/nfts',
+    authors: '/user'
 }
 
 

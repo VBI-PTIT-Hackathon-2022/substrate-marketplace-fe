@@ -8,11 +8,9 @@ import utils from '../utils'
 
 function TxButton({
   attrs = null,
-  color = 'blue',
   disabled = false,
   label,
   setStatus,
-  style = null,
   type = 'QUERY',
   txOnClickHandler = null,
 }) {
