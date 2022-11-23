@@ -5,6 +5,8 @@ import { web3FromSource } from '@polkadot/extension-dapp'
 
 import { useSubstrateState } from '../'
 import utils from '../utils'
+import {nftSaveDb} from "../../core/nft/db";
+//import {Axios} from "../../core/axios";
 
 function TxButton({
   attrs = null,
@@ -57,10 +59,13 @@ function TxButton({
     return [address, { signer: injector.signer }]
   }
 
-  const txResHandler = ({ status }) =>
+  const txResHandler = async ({ status }) => {
     status.isFinalized
-      ? setStatus(`😉 Finalized. Block hash: ${status.asFinalized.toString()}`)
-      : setStatus(`Current transaction status: ${status.type}`)
+        ? setStatus(`😉 Finalized. Block hash: ${status.asFinalized.toString()}`)
+        : setStatus(`Current transaction status: ${status.type}`)
+    nftSaveDb(api)
+  }
+
 
   const txErrHandler = err =>
     setStatus(`😞 Transaction Failed: ${err.toString()}`)

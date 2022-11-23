@@ -1,8 +1,9 @@
 const api = {
-    baseUrl: 'http://localhost:3000', //mock data base folder
+    baseUrl: 'http://localhost:3001/api/', //mock data base folder
     nfts: '/nfts',
-    authors: '/user'
+    user: '/user',
+    order: '/order',
+    listing:'/listing',
 }
-
 
 export default api;

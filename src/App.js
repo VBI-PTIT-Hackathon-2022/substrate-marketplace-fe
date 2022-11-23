@@ -18,6 +18,7 @@ import { createGlobalStyle } from 'styled-components';
 import {Route, Routes} from "react-router-dom";
 import ScrollToTop from "./components/menu/ScrollToTop";
 import Mint from "./components/pages/mint";
+import Events from "./Events";
 const GlobalStyles = createGlobalStyle`
   :root {
     scroll-behavior: unset;
@@ -71,6 +72,7 @@ function Main() {
           <Route path={"/mint"} element={<Mint />} />
         </Routes>
         <ScrollToTop />
+        <Events />
       </div>
       <DeveloperConsole />
     </div>
