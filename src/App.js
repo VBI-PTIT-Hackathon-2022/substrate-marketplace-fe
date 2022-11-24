@@ -18,7 +18,7 @@ import { createGlobalStyle } from 'styled-components';
 import {Route, Routes} from "react-router-dom";
 import ScrollToTop from "./components/menu/ScrollToTop";
 import Mint from "./components/pages/mint";
-import Events from "./Events";
+import ItemDetailRedux from "./components/pages/item";
 const GlobalStyles = createGlobalStyle`
   :root {
     scroll-behavior: unset;
@@ -70,9 +70,9 @@ function Main() {
           <Route path="/" element={<Home />} />
           <Route path={"/create"} element={<Create />} />
           <Route path={"/mint"} element={<Mint />} />
+          <Route path={"/ItemDetail/:nftid"} element={<ItemDetailRedux />} />
         </Routes>
         <ScrollToTop />
-        <Events />
       </div>
       <DeveloperConsole />
     </div>

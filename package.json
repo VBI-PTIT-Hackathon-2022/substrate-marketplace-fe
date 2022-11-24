@@ -37,6 +37,7 @@
     "elegant-icons": "^0.0.1",
     "et-line": "^1.0.1",
     "font-awesome": "^4.7.0",
+    "moment": "^2.29.4",
     "node-polyfill-webpack-plugin": "^1.1.4",
     "prop-types": "^15.8.1",
     "react": "^17.0.2",
