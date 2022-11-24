@@ -2,11 +2,9 @@ import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { Button } from 'semantic-ui-react'
 import { web3FromSource } from '@polkadot/extension-dapp'
-
+import {userSaveDb} from "../../core/nft/db";
 import { useSubstrateState } from '../'
 import utils from '../utils'
-import {nftSaveDb} from "../../core/nft/db";
-//import {Axios} from "../../core/axios";
 
 function TxButton({
   attrs = null,
@@ -63,7 +61,8 @@ function TxButton({
     status.isFinalized
         ? setStatus(`😉 Finalized. Block hash: ${status.asFinalized.toString()}`)
         : setStatus(`Current transaction status: ${status.type}`)
-    nftSaveDb(api)
+    console.log(currentAccount)
+    await userSaveDb(api, currentAccount.meta.name.toUpperCase(),currentAccount.address)
   }
 
 
