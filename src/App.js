@@ -70,7 +70,7 @@ function Main() {
           <Route path="/" element={<Home />} />
           <Route path={"/create"} element={<Create />} />
           <Route path={"/mint"} element={<Mint />} />
-          <Route path={"/ItemDetail/:nftid"} element={<ItemDetailRedux />} />
+          <Route path={"/itemDetail/:nftId"} element={<ItemDetailRedux />} />
         </Routes>
         <ScrollToTop />
       </div>

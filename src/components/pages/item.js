@@ -78,7 +78,7 @@ const ItemDetailRedux = ({ nftId }) => {
 
     useEffect(() => {
         dispatch(fetchNftDetail(nftId));
-        console.log(nft);
+        console.log("fetch nft detail:" ,nftId);
     }, [dispatch, nftId]);
 
     return (
