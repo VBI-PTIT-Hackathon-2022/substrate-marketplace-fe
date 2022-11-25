@@ -34,3 +34,15 @@ export const fetchAuthorRanking = () => async (dispatch) => {
     dispatch(actions.getAuthorRanking.failure(err));
   }
 };
+
+export const fetchUserDetail = async (name,walletAddress) => {
+  const response = await Axios({
+    method: 'post', headers: {"Content-Type": "application/json"}, url: '/users/' + walletAddress, data: {
+      name: name
+    }
+  })
+  const data = response.data;
+  console.log(data)
+  return data;
+
+}
