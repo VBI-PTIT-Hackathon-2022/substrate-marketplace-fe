@@ -9,6 +9,7 @@ import { fetchNftDetail } from "../../store/actions/thunks";
 import Checkoutbid from "../components/Checkoutbid";*/
 import api from "../../core/api";
 import moment from "moment";
+import {useParams} from "react-router-dom";
 
 const GlobalStyles = createGlobalStyle`
   header#myHeader.navbar.white {
@@ -38,8 +39,8 @@ const GlobalStyles = createGlobalStyle`
   }
 `;
 
-const ItemDetailRedux = ({ nftId }) => {
-
+const ItemDetailRedux = () => {
+    const nftId = useParams().nftId;
     const [openMenu0, setOpenMenu0] = React.useState(true);
     const [openMenu, setOpenMenu] = React.useState(false);
     const [openMenu1, setOpenMenu1] = React.useState(false);
@@ -78,7 +79,6 @@ const ItemDetailRedux = ({ nftId }) => {
 
     useEffect(() => {
         dispatch(fetchNftDetail(nftId));
-        console.log("fetch nft detail:" ,nftId);
     }, [dispatch, nftId]);
 
     return (

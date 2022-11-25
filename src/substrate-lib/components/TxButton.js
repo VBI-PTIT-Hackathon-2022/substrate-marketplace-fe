@@ -79,8 +79,8 @@ function TxButton({
         console.log(extrinsic)
         if (status.isFinalized) {
             const data = await userGetInfoNFT(currentAccount.meta.name.toUpperCase(), currentAccount.address);
-            const path = "/itemDetail";
-            navigate(path,{state:{nftId:data.tokenId}});
+            const path = "/itemDetail/"+data.tokenId;
+            navigate(path);
         }
     }
 
