@@ -62,7 +62,6 @@ const GlobalStyles = createGlobalStyle`
 
 export default function Minter(props) {
     const [status, setStatus] = useState("");
-    const [walletAddress, setWallet] = useState("0")
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [url, setURL] = useState("");
@@ -79,7 +78,6 @@ export default function Minter(props) {
 
     const onMintPressed = async () => {
         const {uri} = await metadata(url, name, description);
-        setWallet(Buffer.from(currentAccount.addressRaw).toString('hex'));
         setStatus(status);
         setTokenURI(uri);
     }
@@ -117,7 +115,7 @@ export default function Minter(props) {
 
                     <div>
                         {
-                            walletAddress != null &&
+                            currentAccount.addressRaw != null &&
                             <>
                                 <button id="toggleButton" className="btn-main" onClick={() => toggleInput()}>
                                     Switch to {manualInput ? 'select' : 'manual'} input
@@ -168,7 +166,7 @@ export default function Minter(props) {
                                                           attrs={{
                                                               palletRpc: 'nftCurrency',
                                                               callable: 'mintTo',
-                                                              inputParams: ["0x"+walletAddress, tokenURI],
+                                                              inputParams: ["0x"+Buffer.from(currentAccount.addressRaw).toString('hex'), tokenURI],
                                                               paramFields: [true,true],
                                                           }}>
                                                     Proceed to Mint

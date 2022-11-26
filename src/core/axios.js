@@ -4,7 +4,6 @@ const baseUrl = "http://localhost:3001";
 
 export const Axios = axios.create({
     baseURL: baseUrl,
-    timeout: 10000,
     headers: {
         'Content-Type': 'application/json',
         'accept': 'schema',

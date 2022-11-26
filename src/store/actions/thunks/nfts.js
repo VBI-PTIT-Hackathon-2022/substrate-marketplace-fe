@@ -34,7 +34,6 @@ export const fetchNftShowcase = () => async (dispatch) => {
             cancelToken: Canceler.token,
             params: {}
         });
-
         dispatch(actions.getNftShowcase.success(data));
     } catch (err) {
         dispatch(actions.getNftShowcase.failure(err));
@@ -46,11 +45,12 @@ export const fetchNftDetail = (nftId) => async (dispatch) => {
 
     try {
         const response = await Axios({
-            method: 'get', headers: {"accept": "schema"}, url: '/nfts/' + nftId, data: {}
+            method: 'get', url: '/nfts/' + nftId
         })
         console.log(response)
-        dispatch(actions.getNftDetail.success(response));
+        dispatch(actions.getNftDetail.success(response.data));
     } catch (err) {
         dispatch(actions.getNftDetail.failure(err));
     }
 };
+

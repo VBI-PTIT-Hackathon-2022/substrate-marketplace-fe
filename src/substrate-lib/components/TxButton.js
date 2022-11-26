@@ -2,10 +2,10 @@ import React, {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
 import {Button} from 'semantic-ui-react'
 import {web3FromSource} from '@polkadot/extension-dapp'
-import {userGetInfoNFT} from "../../core/nft/db";
 import {useSubstrateState} from '../'
 import utils from '../utils'
 import {useNavigate} from "react-router-dom";
+import {fetchUserDetail} from "../../store/actions/thunks";
 
 function TxButton({
                       attrs = null,
@@ -63,13 +63,7 @@ function TxButton({
         status.isFinalized
             ? setStatus(`😉 Finalized. Block hash: ${status.asFinalized.toString()}`)
             : setStatus(`Current transaction status: ${status.type}`)
-        console.log(extrinsic)
-        if (status.isFinalized && extrinsic==="mintTo") {
-            const data = await userGetInfoNFT(currentAccount.meta.name.toUpperCase(), currentAccount.address);
-            const path = "/ItemDetail/"+data._id;
-            console.log(path)
-            navigate('/');
-        }
+
     }
 
     const mintHandle = async ({status}) => {
@@ -77,9 +71,12 @@ function TxButton({
             ? setStatus(`😉 Finalized. Block hash: ${status.asFinalized.toString()}`)
             : setStatus(`Current transaction status: ${status.type}`)
         console.log(extrinsic)
+        console.log("123",currentAccount.meta.name)
+        const data = await fetchUserDetail(currentAccount.meta.name.toUpperCase(), currentAccount.address);
         if (status.isFinalized) {
-            const data = await userGetInfoNFT(currentAccount.meta.name.toUpperCase(), currentAccount.address);
-            const path = "/ItemDetail/"+data.tokenId;
+
+            console.log(data.nfts[data.nfts.length-1].tokenId)
+            const path = "/itemDetail/"+data.nfts[data.nfts.length-1].tokenId;
             navigate(path);
         }
     }

@@ -5,6 +5,7 @@ import {Button, Dropdown, Icon, Label,} from 'semantic-ui-react'
 
 import {useSubstrate, useSubstrateState} from '../../substrate-lib'
 import {Link, useMatch, useResolvedPath} from "react-router-dom";
+import {fetchUserDetail} from "../../store/actions/thunks";
 
 const CHROME_EXT_URL = 'https://chrome.google.com/webstore/detail/polkadot%7Bjs%7D-extension/mopnmbcafieddcagagdcbnhejhlodfdd'
 const FIREFOX_ADDON_URL = 'https://addons.mozilla.org/en-US/firefox/addon/polkadot-js-extension/'
@@ -36,12 +37,15 @@ function Main(props) {
     const initialAddress = keyringOptions.length > 0 ? keyringOptions[0].value : ''
 
     // Set the initial address
-    useEffect(() => {
+    useEffect(async () => {
         // `setCurrentAccount()` is called only when currentAccount is null (uninitialized)
         !currentAccount && initialAddress.length > 0 && setCurrentAccount(keyring.getPair(initialAddress))
+        console.log(currentAccount.meta.name.toUpperCase(), currentAccount.address);
+        await fetchUserDetail(currentAccount.meta.name.toUpperCase(), currentAccount.address);
     }, [currentAccount, setCurrentAccount, keyring, initialAddress])
 
     const onChange = addr => {
+
         setCurrentAccount(keyring.getPair(addr))
     }
     useEffect(() => {
