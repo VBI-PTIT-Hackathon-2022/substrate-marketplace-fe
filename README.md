@@ -17,8 +17,8 @@ The codebase is installed using [git](https://git-scm.com/) and [yarn](https://y
 
 ```bash
 # Clone the repository
-git clone https://github.com/substrate-developer-hub/substrate-front-end-template.git
-cd substrate-front-end-template
+git clone https://github.com/VBI-PTIT-Hackathon-2022/substrate-marketplace-fe.git
+cd substrate-marketplace-fe
 yarn install
 ```
 
