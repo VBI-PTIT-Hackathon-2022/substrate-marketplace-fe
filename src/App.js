@@ -13,12 +13,12 @@ import { DeveloperConsole } from './substrate-lib/components'
 
 import Header from "./components/menu/header";
 import Home from "./components/pages/home";
-import Create from './components/pages/create';
 import { createGlobalStyle } from 'styled-components';
 import {Route, Routes} from "react-router-dom";
 import ScrollToTop from "./components/menu/ScrollToTop";
 import Mint from "./components/pages/mint";
 import ItemDetailRedux from "./components/pages/item";
+import ListingForRent from "./components/pages/listingForRent";
 const GlobalStyles = createGlobalStyle`
   :root {
     scroll-behavior: unset;
@@ -67,8 +67,8 @@ function Main() {
           <Header />
         </Sticky>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path={"/create"} element={<Create />} />
+          <Route path="/" element={<Home />} />   />
+          <Route path={"/listingForRent/:nftId"}  element={<ListingForRent />} />
           <Route path={"/mint"} element={<Mint />} />
           <Route path={"/itemDetail/:nftId"} element={<ItemDetailRedux />} />
         </Routes>

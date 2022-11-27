@@ -45,3 +45,13 @@ export const fetchUserDetail = async (username,walletAddress) => {
   return data;
 
 }
+
+export const getUserDetail = async (walletAddress) => {
+  const response = await Axios({
+    method: 'GET', url: '/users/' + walletAddress,
+  })
+  const data = response.data;
+  console.log(data)
+  return data;
+
+}

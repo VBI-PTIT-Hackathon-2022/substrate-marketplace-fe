@@ -54,3 +54,17 @@ export const fetchNftDetail = (nftId) => async (dispatch) => {
     }
 };
 
+export const saveListingForRentNFT = (listing) => async (dispatch) => {
+    dispatch(actions.setListingForRent.request(Canceler.cancel));
+
+    try {
+        const response = await Axios({
+            method: 'get', url: '/nfts/' + nftId
+        })
+        console.log(response)
+        dispatch(actions.getNftDetail.success(response.data));
+    } catch (err) {
+        dispatch(actions.getNftDetail.failure(err));
+    }
+};
+

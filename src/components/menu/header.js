@@ -37,15 +37,16 @@ function Main(props) {
     const initialAddress = keyringOptions.length > 0 ? keyringOptions[0].value : ''
 
     // Set the initial address
-    useEffect(async () => {
+    useEffect(() => {
+        async function fetchData(){
+            await fetchUserDetail(currentAccount.meta.name.toUpperCase(), currentAccount.address);
+        }
         // `setCurrentAccount()` is called only when currentAccount is null (uninitialized)
         !currentAccount && initialAddress.length > 0 && setCurrentAccount(keyring.getPair(initialAddress))
-        console.log(currentAccount.meta.name.toUpperCase(), currentAccount.address);
-        await fetchUserDetail(currentAccount.meta.name.toUpperCase(), currentAccount.address);
+        fetchData();
     }, [currentAccount, setCurrentAccount, keyring, initialAddress])
 
     const onChange = addr => {
-
         setCurrentAccount(keyring.getPair(addr))
     }
     useEffect(() => {
