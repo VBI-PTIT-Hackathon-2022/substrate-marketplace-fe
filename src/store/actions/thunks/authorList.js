@@ -51,7 +51,6 @@ export const getUserDetail = async (walletAddress) => {
     method: 'GET', url: '/users/' + walletAddress,
   })
   const data = response.data;
-  console.log(data)
   return data;
 
 }

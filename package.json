@@ -23,7 +23,7 @@
     "@emotion/react": "^11.10.5",
     "@pinata/sdk": "^2.1.0",
     "@polkadot/api": "^7.10.1",
-    "@polkadot/extension-dapp": "^0.42.7",
+    "@polkadot/extension-dapp": "^0.44.6",
     "@polkadot/keyring": "^8.4.1",
     "@polkadot/networks": "^8.4.1",
     "@polkadot/types": "^7.10.1",

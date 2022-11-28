@@ -11,6 +11,7 @@ import Checkoutbid from "../components/Checkoutbid";*/
 // import moment from "moment";
 import {useNavigate, useParams} from "react-router-dom";
 import {useSubstrateState} from "../../substrate-lib";
+import {getListingDetail} from "../../store/actions/thunks/renting";
 //import {useSubstrateState} from "../../substrate-lib";
 
 const GlobalStyles = createGlobalStyle`
@@ -86,10 +87,20 @@ export default function ItemDetailRedux(props) {
     const [openCheckout, setOpenCheckout] = useState(false);
     const [openCheckoutbid, setOpenCheckoutbid] = useState(false);
     const {currentAccount} = useSubstrateState()
+    const [listingDetail, setListingDetail] = useState(null);
 
     async function getOwnerName(props) {
         const data = await getUserDetail(props);
         setOwnerNFT(data.name);
+    }
+
+    async function getDetailRenting(account, tokenId) {
+        const data = await getListingDetail(account, tokenId);
+        console.log(data);
+        if (data) {
+            setListingDetail(data);
+        }
+
     }
 
 
@@ -97,9 +108,11 @@ export default function ItemDetailRedux(props) {
         async function fetchData() {
             await dispatch(fetchNftDetail(nftId));
         }
+
         fetchData();
-        getOwnerName(nft.walletAddress)
-    }, [dispatch,nftId, nft.walletAddress]);
+        getOwnerName(nft.walletAddress);
+        getDetailRenting(nft.walletAddress, nftId);
+    }, [dispatch, nftId, nft.walletAddress]);
 
 
     return (<div>
@@ -111,10 +124,10 @@ export default function ItemDetailRedux(props) {
                 </div>
                 <div className="col-md-6">
                     <div className="item_info">
-                        {nft.item_type === 'on_auction' && <>
-                            Auctions ends in
+                        {listingDetail && <>
+                            Listing for rent ends in
                             <div className="de_countdown">
-                                <Clock deadline={nft.deadline}/>
+                                <Clock deadline={listingDetail.due_date}/>
                             </div>
                         </>}
                         <h2>{nft.name}</h2>
@@ -252,17 +265,33 @@ export default function ItemDetailRedux(props) {
                                         <span>Waiting for connecting ....</span>
 
                                     </> : <>
-                                        {currentAccount.address === nft.walletAddress ? <>
-                                            <button className='btn-main lead mb-5 mr15'
-                                                    onClick={() => {
-                                                        const path = '/listingForRent/'+nftId;
-                                                        navigate(path,{state:nft});
-                                                    }}>List for Rent
-                                            </button>
-                                            <button className='btn-main btn2 lead mb-5'
-                                                    >List for Sell
-                                            </button>
-                                        </> : <>
+                                        {currentAccount.address === nft.walletAddress ?
+                                            <>
+                                                {listingDetail?
+                                                    <>
+                                                        <button className='btn-main lead mb-5 mr15'
+                                                                onClick={() => {
+                                                                    const path = '/listingForRent/' + nftId;
+                                                                    navigate(path, {state: nft});
+                                                                }}>Cancel Listing for Rent
+                                                        </button>
+                                                    </>
+                                                    :
+                                                    <>
+                                                        <button className='btn-main lead mb-5 mr15'
+                                                                onClick={() => {
+                                                                    const path = '/listingForRent/' + nftId;
+                                                                    navigate(path, {state: nft});
+                                                                }}>Listing for Rent
+                                                        </button>
+                                                    </>
+                                                }
+
+                                                <button className='btn-main btn2 lead mb-5'
+                                                >List for Sell
+                                                </button>
+                                            </>
+                                            : <>
                                             <button className='btn-main lead mb-5 mr15'
                                                     onClick={() => setOpenCheckout(true)}>Buy Now
                                             </button>

@@ -2,7 +2,9 @@ import React, { Component } from "react";
 import Clock from "../components/Clock";
 import Footer from '../components/footer';
 import { createGlobalStyle } from 'styled-components';
-import {useLocation} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
+import {saveListingNFT} from "../../store/actions/thunks/renting";
+import {useSubstrateState} from "../../substrate-lib";
 
 const GlobalStyles = createGlobalStyle`
   header#myHeader.navbar.sticky.white {
@@ -58,21 +60,27 @@ const GlobalStyles = createGlobalStyle`
 `;
 function ListingForRent(Component) {
     return function WrappedComponent(props) {
+        const currentAccount =useSubstrateState().currentAccount;
+        const navigate = useNavigate();
         const myHookValue = useLocation();
-        return <Component {...props} nft={myHookValue} />;
+        return <Component {...props} nft={myHookValue} currentAccount={currentAccount}  navigate={navigate}/>;
     }
 }
 class Listing extends Component {
     state = {
+        currentAccount:null,
         due_date: null,
         fee:null,
         nftDetail:null,
+        navigate:null
     }
 
     constructor(props) {
         super(props);
         this.state = {
             nftDetail: props.nft.state,
+            currentAccount: props.currentAccount,
+            navigate:props.navigate,
         };
     }
 
@@ -150,9 +158,13 @@ class Listing extends Component {
 
                                     <div className="spacer-10"></div>
 
-                                    <input type="button" id="submit" className="btn-main" onClick={()=>{
-                                        console.log(this.state);
-
+                                    <input type="button" id="submit" className="btn-main" onClick={async () => {
+                                        const response = await saveListingNFT(this.state.currentAccount, this.state);
+                                        console.log(response)
+                                        if (response===201) {
+                                            const path = "/itemDetail/" + this.state.nftDetail.tokenId;
+                                            this.state.navigate(path);
+                                        }
                                     }} value="Listing"/>
                                 </div>
                             </form>
@@ -183,7 +195,7 @@ class Listing extends Component {
                                         {this.state.fee} UNIT
                                     </div>
                                     <div className="nft__item_action">
-                                        <span>Rent</span>
+                                        <span>Rent NFT</span>
                                     </div>
                                     <div className="nft__item_like">
                                         <i className="fa fa-heart"></i><span>50</span>

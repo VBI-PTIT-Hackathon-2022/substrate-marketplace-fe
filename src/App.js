@@ -19,6 +19,7 @@ import ScrollToTop from "./components/menu/ScrollToTop";
 import Mint from "./components/pages/mint";
 import ItemDetailRedux from "./components/pages/item";
 import ListingForRent from "./components/pages/listingForRent";
+import Collection from "./components/pages/collection";
 const GlobalStyles = createGlobalStyle`
   :root {
     scroll-behavior: unset;
@@ -71,6 +72,7 @@ function Main() {
           <Route path={"/listingForRent/:nftId"}  element={<ListingForRent />} />
           <Route path={"/mint"} element={<Mint />} />
           <Route path={"/itemDetail/:nftId"} element={<ItemDetailRedux />} />
+          <Route path={"/collection/:walletAddress"} element={<Collection />} />
         </Routes>
         <ScrollToTop />
       </div>
