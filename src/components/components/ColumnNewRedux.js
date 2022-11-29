@@ -1,17 +1,14 @@
 import React, { memo, useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import * as selectors from '../../store/selectors';
+import { useDispatch } from 'react-redux';
 import * as actions from '../../store/actions/thunks';
 import { clearNfts, clearFilter } from '../../store/actions';
 import NftCard from './NftCard';
-import { shuffleArray } from '../../store/utils';
 
 //react functional component
 const ColumnNewRedux = ({ showLoadMore = true, shuffle = false, user }) => {
 
     const dispatch = useDispatch();
-    const nftItems = useSelector(selectors.nftItems);
-    const nfts = nftItems ? shuffle ? shuffleArray(nftItems) : nftItems : [];
+    const nfts = user.nfts;
     const [height, setHeight] = useState(0);
 
     const onImgLoad = ({target:img}) => {

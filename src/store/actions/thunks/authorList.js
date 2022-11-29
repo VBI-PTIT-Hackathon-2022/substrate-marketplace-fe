@@ -36,16 +36,13 @@ export const fetchAuthorRanking = () => async (dispatch) => {
 };
 
 export const fetchUserDetail = async (username,walletAddress) => {
-
   if(username){
-    console.log(username)
     const response = await Axios({
       method: 'POST', url: '/users/' + walletAddress, data: {
         name:username,
       }
     })
     const data = response;
-    console.log(data)
     return data;
   }
   }

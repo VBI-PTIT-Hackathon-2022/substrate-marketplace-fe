@@ -21,7 +21,7 @@ export const saveListingNFT = async (account,data) => {
                 paid_type: 'u64'
             }        }
     });
-    const due_date = new Date(data.due_date).getTime();
+    const due_date = new Date(data.due_date).getTime()/1000;
     const listing = order.createType('Order', {
         lender: data.nftDetail.walletAddress,
         fee: data.fee,
@@ -114,7 +114,7 @@ export async function getMessageRenting (orderRight){
                 paid_type: 'u64'
             }        }
     });
-    const due_date = new Date(orderRight.due_date).getTime();
+    const due_date = new Date(orderRight.due_date).getTime()/1000;
     const orderRental = order.createType('Order', {
         lender: orderRight.lenderAddress,
         borrower: orderRight.borrowerAddress,

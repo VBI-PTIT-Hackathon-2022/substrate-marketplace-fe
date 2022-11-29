@@ -2,9 +2,8 @@ import React, {memo, useEffect} from "react";
 import Footer from '../components/footer';
 import { createGlobalStyle } from 'styled-components';
 import ColumnNewRedux from "../components/ColumnNewRedux";
-import {useDispatch, useSelector} from "react-redux";
-import * as selectors from "../../store/selectors";
 import {fetchUserDetail} from "../../store/actions/thunks";
+import {useParams} from "react-router-dom";
 
 const GlobalStyles = createGlobalStyle`
   header#myHeader.navbar.white {
@@ -24,6 +23,9 @@ const GlobalStyles = createGlobalStyle`
 `;
 
 const Collection = function({walletAddress})  {
+    const params = useParams();
+    const userWallet = params.walletAddress;
+    const [userDetail,setUserDetail] = React.useState(null);
     const [openMenu, setOpenMenu] = React.useState(true);
     const [openMenu1, setOpenMenu1] = React.useState(false);
     const handleBtnClick = () => {
@@ -39,14 +41,14 @@ const Collection = function({walletAddress})  {
         document.getElementById("Mainbtn").classList.remove("active");
     };
 
-    const dispatch = useDispatch();
-    const hotCollectionsState = useSelector(selectors.hotCollectionsState);
-    const userDetail = hotCollectionsState.data ? hotCollectionsState.data[0] : {};
 
-    useEffect(() => {
-        console.log(walletAddress)
-        dispatch(fetchUserDetail("",walletAddress));
-    }, [dispatch, walletAddress]);
+    useEffect( async () => {
+        console.log(userWallet);
+        const data = await fetchUserDetail(" ", userWallet);
+        setUserDetail(data.data)
+        console.log(data)
+
+    },[]);
 
 
     return (
@@ -76,7 +78,7 @@ const Collection = function({walletAddress})  {
                                             <>
                                                 {userDetail.name}
                                                 <div className="clearfix"></div>
-                                                <span id="wallet" className="profile_wallet">{walletAddress}</span>
+                                                <span id="wallet" className="profile_wallet">{userDetail.walletAddress}</span>
                                                 <button id="btn_copy" title="Copy Text">Copy</button>
                                             </>
                                             : <></> }
@@ -117,7 +119,7 @@ const Collection = function({walletAddress})  {
                     <div id='zero2' className='onStep fadeIn'>
                         {userDetail?
                             <>
-                                <ColumnNewRedux shuffle showLoadMore={false} />
+                                <ColumnNewRedux shuffle showLoadMore={false} user={userDetail}/>
                             </>
                             :
                             <>
