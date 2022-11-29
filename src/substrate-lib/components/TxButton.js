@@ -71,14 +71,18 @@ function TxButton({
             ? setStatus(`😉 Finalized. Block hash: ${status.asFinalized.toString()}`)
             : setStatus(`Current transaction status: ${status.type}`)
         console.log(extrinsic)
-        console.log("123",currentAccount.meta.name)
         const data = await fetchUserDetail(currentAccount.meta.name.toUpperCase(), currentAccount.address);
         if (status.isFinalized) {
-
-            console.log(data.nfts[data.nfts.length-1].tokenId)
-            const path = "/itemDetail/"+data.nfts[data.nfts.length-1].tokenId;
+            console.log(data.data.nfts[data.data.nfts.length-1].tokenId)
+            const path = "/itemDetail/"+data.data.nfts[data.data.nfts.length-1].tokenId;
             navigate(path);
         }
+    }
+
+    const rentalHandle = async ({status}) => {
+        status.isFinalized
+            ? setStatus(`😉 Finalized. Block hash: ${status.asFinalized.toString()}`)
+            : setStatus(`Current transaction status: ${status.type}`)
     }
 
 
@@ -118,7 +122,7 @@ function TxButton({
         const fromAcct = await getFromAcct()
         const transformed = transformParams(paramFields, inputParams)
         // transformed can be empty parameters
-
+        console.log(inputParams)
         const txExecute = transformed
             ? api.tx[palletRpc][callable](...transformed)
             : api.tx[palletRpc][callable]()
@@ -126,6 +130,11 @@ function TxButton({
         if (callable ==="mintTo") {
              unsub = await txExecute
                 .signAndSend(...fromAcct, mintHandle)
+                .catch(txErrHandler)
+        }
+        if (callable ==="createRental") {
+            unsub = await txExecute
+                .signAndSend(...fromAcct, rentalHandle)
                 .catch(txErrHandler)
         }
 

@@ -14,7 +14,7 @@ const acctAddr = acct => (acct ? acct.address : '')
 
 const NavLink = (props) => {
     let resolved = useResolvedPath(props.to);
-    console.log(resolved)
+
     let match = useMatch({path: resolved.pathname, end: true});
 
     return (
@@ -44,9 +44,9 @@ function Main(props) {
         }
         // `setCurrentAccount()` is called only when currentAccount is null (uninitialized)
         !currentAccount && initialAddress.length > 0 && setCurrentAccount(keyring.getPair(initialAddress))
-        console.log(currentAccount)
-        fetchData();
-
+        if(currentAccount){
+            fetchData()
+        }
     }, [currentAccount, keyring, initialAddress])
 
     const onChange = addr => {
@@ -88,15 +88,21 @@ function Main(props) {
                            type="text"/>
                 </div>
                 <div className="navbar-item">
-                    <NavLink to="/explorer">
+                    <NavLink to={"/explorer"} >
                         Explorer
                     </NavLink>
                 </div>
                 <div className="navbar-item">
+                    {currentAccount?
+                        <>
+                            <NavLink to={"/collection/"+currentAccount.address}>
+                                Collection
+                            </NavLink>
+                        </>
+                        :
+                        <></>
+                    }
 
-                    <NavLink to="/collection">
-                        Collection
-                    </NavLink>
                 </div>
                 <div className="navbar-item">
                     <NavLink to="/mint">

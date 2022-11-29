@@ -7,7 +7,7 @@ import NftCard from './NftCard';
 import { shuffleArray } from '../../store/utils';
 
 //react functional component
-const ColumnNewRedux = ({ showLoadMore = true, shuffle = false, user = null }) => {
+const ColumnNewRedux = ({ showLoadMore = true, shuffle = false, user }) => {
 
     const dispatch = useDispatch();
     const nftItems = useSelector(selectors.nftItems);

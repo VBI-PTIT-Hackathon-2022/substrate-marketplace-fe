@@ -12,12 +12,12 @@ export const fetchNftsBreakdown = (user) => async (dispatch, getState) => {
 
     try {
 
-        const {data} = await Axios.post(`/users/`+user, {
+        const {data} = await Axios.post(`/users/`+user.walletAddress, {
             cancelToken: Canceler.token,
-            body: {name:user}
+            body: {name:user.name}
         });
         console.log(data)
-        dispatch(actions.getNftBreakdown.success(data.data.nft));
+        dispatch(actions.getNftBreakdown.success(data.nfts));
     } catch (err) {
         dispatch(actions.getNftBreakdown.failure(err));
     }

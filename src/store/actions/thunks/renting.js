@@ -29,7 +29,9 @@ export const saveListingNFT = async (account,data) => {
         due_date: due_date,
         paid_type: 1
     })
+    console.log(listing)
     const message = u8aToHex(stringToU8a(listing));
+    console.log("message left: ",message)
 
     if (account.meta.source){
         const injector = await web3FromSource(account.meta.source);
@@ -98,4 +100,31 @@ export const getListingDetail = async (account,tokenId) => {
     } catch (err) {
         console.log(err);
     }
+}
+
+export async function getMessageRenting (orderRight){
+    const order = await ApiPromise.create({
+        types: {
+            Order: {
+                lender: 'AccountId',
+                borrower: 'AccountId',
+                fee: 'u64',
+                token: 'Vec<u8>',
+                due_date: 'u64',
+                paid_type: 'u64'
+            }        }
+    });
+    const due_date = new Date(orderRight.due_date).getTime();
+    const orderRental = order.createType('Order', {
+        lender: orderRight.lenderAddress,
+        borrower: orderRight.borrowerAddress,
+        fee: orderRight.fee,
+        token: orderRight.tokenId,
+        due_date: due_date,
+        paid_type: 1
+    })
+    console.log(orderRental)
+    const message = u8aToHex(stringToU8a(orderRental));
+
+    return message;
 }

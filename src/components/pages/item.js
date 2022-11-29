@@ -11,8 +11,8 @@ import Checkoutbid from "../components/Checkoutbid";*/
 // import moment from "moment";
 import {useNavigate, useParams} from "react-router-dom";
 import {useSubstrateState} from "../../substrate-lib";
-import {getListingDetail} from "../../store/actions/thunks/renting";
-//import {useSubstrateState} from "../../substrate-lib";
+import {getListingDetail, getMessageRenting} from "../../store/actions/thunks/renting";
+import {TxButton} from "../../substrate-lib/components";
 
 const GlobalStyles = createGlobalStyle`
   header#myHeader.navbar.white {
@@ -82,17 +82,31 @@ export default function ItemDetailRedux(props) {
     const dispatch = useDispatch();
     const nftDetailState = useSelector(selectors.nftDetailState);
     const nft = nftDetailState.data ? nftDetailState.data : [];
-
+    const {keyring}  = useSubstrateState();
     const [ownerNFT, setOwnerNFT] = useState(null);
     const [openCheckout, setOpenCheckout] = useState(false);
     const [openCheckoutbid, setOpenCheckoutbid] = useState(false);
-    const {currentAccount} = useSubstrateState()
     const [listingDetail, setListingDetail] = useState(null);
-
+    const {api, currentAccount} = useSubstrateState();
+    const [accountBalance, setAccountBalance] = useState(0);
+    const [feePaid, setFeePaid] = useState(0);
+    const [status, setStatus] = useState('')
+    const [orderRight, setOrderRight] = useState(null);
     async function getOwnerName(props) {
         const data = await getUserDetail(props);
         setOwnerNFT(data.name);
     }
+
+    useEffect(() => {
+        let unsubscribe
+        // If the user has selected an address, create a new subscription
+        currentAccount && api.query.system
+            .account(currentAccount.address, balance => setAccountBalance(balance.data.free.toHuman()))
+            .then(unsub => (unsubscribe = unsub))
+            .catch(console.error)
+        
+        return () => unsubscribe && unsubscribe()
+    }, [api, currentAccount])
 
     async function getDetailRenting(account, tokenId) {
         const data = await getListingDetail(account, tokenId);
@@ -103,17 +117,35 @@ export default function ItemDetailRedux(props) {
 
     }
 
-
     useEffect(() => {
         async function fetchData() {
             await dispatch(fetchNftDetail(nftId));
         }
-
         fetchData();
         getOwnerName(nft.walletAddress);
         getDetailRenting(nft.walletAddress, nftId);
     }, [dispatch, nftId, nft.walletAddress]);
 
+
+    async function updateInputValue(evt) {
+        const now = new Date().getTime();
+        const due_date = new Date(evt.target.value).getTime();
+        console.log(now, due_date);
+        const quantity = ((due_date - now) / 1000) / 86400;
+        console.log(parseInt(quantity));
+        if (parseInt(quantity) < 1) return;
+        setFeePaid(parseInt(quantity) * listingDetail.fee);
+        const order = {
+            lenderAddress: listingDetail.lender,
+            borrowerAddress: currentAccount.address,
+            fee: listingDetail.fee,
+            tokenId: listingDetail.tokenId,
+            due_date: evt.target.value,
+        }
+        console.log(order);
+        const messageRight = await getMessageRenting(order);
+        setOrderRight(messageRight);
+    }
 
     return (<div>
         <GlobalStyles/>
@@ -292,12 +324,25 @@ export default function ItemDetailRedux(props) {
                                                 </button>
                                             </>
                                             : <>
-                                            <button className='btn-main lead mb-5 mr15'
-                                                    onClick={() => setOpenCheckout(true)}>Buy Now
-                                            </button>
-                                            <button className='btn-main btn2 lead mb-5'
-                                                    onClick={() => setOpenCheckoutbid(true)}>Place Bid
-                                            </button>
+                                                {listingDetail?
+                                               <>
+                                                   <button className='btn-main lead mb-5 mr15'
+                                                           onClick={() => setOpenCheckout(true)}>Rent now
+                                                   </button>
+                                               </>
+                                                    :
+                                                    <>
+                                                        <button className='btn-main lead mb-5 mr15'
+                                                                onClick={() => setOpenCheckoutbid(true)}>Buy now
+                                                        </button>
+                                                    </>
+                                                }
+
+                                                <button className='btn-main btn2 lead mb-5'
+                                                > Place an offer
+                                                </button>
+
+
                                         </>}
 
                                     </>}
@@ -316,37 +361,51 @@ export default function ItemDetailRedux(props) {
                 <div className='heading'>
                     <h3>Checkout </h3>
                 </div>
-                <p>You are about to purchase a <span className="bold">AnimeSailorClub #304</span>
-                    <span className="bold">from Monica Lucas</span></p>
+                <p>You are about to rent a <span className="bold">{nft.name} </span>
+                     from <span className="bold">  {nft.walletAddress}</span></p>
                 <div className='detailcheckout mt-4'>
                     <div className='listcheckout'>
                         <h6>
-                            Enter quantity.
-                            <span className="color">10 available</span>
+                            Enter expiration date.
+                            <span className="color"> Before the listing stops on {listingDetail.due_date} </span>
                         </h6>
-                        <input type="text" name="buy_now_qty" id="buy_now_qty" className="form-control"/>
+                        <input type="date" name="due_date" id="due_date" onChange={evt => updateInputValue(evt)} className="form-control" />
                     </div>
 
                 </div>
                 <div className='heading mt-3'>
                     <p>Your balance</p>
                     <div className='subtotal'>
-                        10.67856 ETH
+                        {accountBalance} UNIT
                     </div>
                 </div>
+
                 <div className='heading'>
-                    <p>Service fee 2.5%</p>
+                    <p>Fee rent per day</p>
                     <div className='subtotal'>
-                        0.00325 ETH
+                        {listingDetail.fee} UNIT
                     </div>
                 </div>
                 <div className='heading'>
                     <p>You will pay</p>
                     <div className='subtotal'>
-                        0.013325 ETH
+                        {feePaid} UNIT
                     </div>
                 </div>
-                <button className='btn-main lead mb-5'>Checkout</button>
+                <TxButton id="mintButton" className="btn-main lead mb-5" label="Rent now"
+                          type="SIGNED-TX"
+                          setStatus={setStatus}
+                          attrs={{
+                              palletRpc: 'renting',
+                              callable: 'createRental',
+                              inputParams: ["0x"+Buffer.from(keyring.decodeAddress(listingDetail.lender)).toString('hex'),"0x"+Buffer.from(currentAccount.addressRaw).toString('hex'),listingDetail.message, listingDetail.signature, orderRight,"0x0000"],
+                              paramFields: [true,true,true,true,true,true],
+                          }}>
+                    Rent now
+                </TxButton>
+                <p id="status">
+                    {status}
+                </p>
             </div>
         </div>}
         {openCheckoutbid && <div className='checkout'>
