@@ -7,7 +7,7 @@ import NftCard from './NftCard';
 import { shuffleArray } from '../../store/utils';
 
 //react functional component
-const ColumnNewRedux = ({ showLoadMore = true, shuffle = false, authorId = null }) => {
+const ColumnNewRedux = ({ showLoadMore = true, shuffle = false, user = null }) => {
 
     const dispatch = useDispatch();
     const nftItems = useSelector(selectors.nftItems);
@@ -22,8 +22,8 @@ const ColumnNewRedux = ({ showLoadMore = true, shuffle = false, authorId = null 
     }
 
     useEffect(() => {
-        dispatch(actions.fetchNftsBreakdown(authorId));
-    }, [dispatch, authorId]);
+        dispatch(actions.fetchNftsBreakdown(user));
+    }, [dispatch, user]);
 
     //will run when component unmounted
     useEffect(() => {
@@ -34,7 +34,7 @@ const ColumnNewRedux = ({ showLoadMore = true, shuffle = false, authorId = null 
     },[dispatch]);
 
     const loadMore = () => {
-        dispatch(actions.fetchNftsBreakdown(authorId));
+        dispatch(actions.fetchNftsBreakdown(user));
     }
 
     return (

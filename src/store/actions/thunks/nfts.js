@@ -2,7 +2,7 @@ import {Axios, Canceler} from '../../../core/axios';
 import * as actions from '../../actions';
 import api from '../../../core/api';
 
-export const fetchNftsBreakdown = (authorId, isMusic = false) => async (dispatch, getState) => {
+export const fetchNftsBreakdown = (user) => async (dispatch, getState) => {
 
     //access the state
     const state = getState();
@@ -11,15 +11,13 @@ export const fetchNftsBreakdown = (authorId, isMusic = false) => async (dispatch
     dispatch(actions.getNftBreakdown.request(Canceler.cancel));
 
     try {
-        let filter = authorId ? 'author=' + authorId : '';
-        let music = isMusic ? 'category=music' : '';
 
-        const {data} = await Axios.get(`'/nfts_music.json' : api.nfts}?${filter}&${music}`, {
+        const {data} = await Axios.post(`/users/`+user, {
             cancelToken: Canceler.token,
-            params: {}
+            body: {name:user}
         });
-
-        dispatch(actions.getNftBreakdown.success(data));
+        console.log(data)
+        dispatch(actions.getNftBreakdown.success(data.data.nft));
     } catch (err) {
         dispatch(actions.getNftBreakdown.failure(err));
     }
