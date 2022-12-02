@@ -1,14 +1,15 @@
 import React, { memo, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import * as actions from '../../store/actions/thunks';
+import * as selectors from '../../store/selectors';
 import { clearNfts, clearFilter } from '../../store/actions';
 import NftCard from './NftCard';
-
+import { shuffleArray } from '../../store/utils';
 //react functional component
 const ColumnNewRedux = ({ showLoadMore = true, shuffle = false, user }) => {
-
     const dispatch = useDispatch();
-    const nfts = user.nfts;
+    const nftItems = useSelector(selectors.nftItems);
+    const nfts = nftItems ? shuffle ? shuffleArray(nftItems) : nftItems : [];
     const [height, setHeight] = useState(0);
 
     const onImgLoad = ({target:img}) => {
@@ -18,8 +19,9 @@ const ColumnNewRedux = ({ showLoadMore = true, shuffle = false, user }) => {
         }
     }
 
-    useEffect(() => {
-        dispatch(actions.fetchNftsBreakdown(user));
+    useEffect(async () => {
+        await dispatch(actions.fetchNftsBreakdown(user));
+        console.log(nfts)
     }, [dispatch, user]);
 
     //will run when component unmounted
@@ -36,8 +38,9 @@ const ColumnNewRedux = ({ showLoadMore = true, shuffle = false, user }) => {
 
     return (
         <div className='row'>
+            {console.log(nfts)}
             {nfts && nfts.map( (nft, index) => (
-                <NftCard nft={nft} key={index} onImgLoad={onImgLoad} height={height} />
+                <NftCard listing={nft} key={index} onImgLoad={onImgLoad} height={height} />
             ))}
             { showLoadMore && nfts.length <= 20 &&
                 <div className='col-lg-12'>

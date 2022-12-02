@@ -1,7 +1,8 @@
-import React, { memo } from 'react';
+import React, {memo, useEffect, useState} from 'react';
 import styled from "styled-components";
 import Clock from "./Clock";
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
+import {fetchNftDetail} from "../../store/actions/thunks";
 
 const Outer = styled.div`
   display: flex;
@@ -13,56 +14,90 @@ const Outer = styled.div`
 `;
 
 //react functional component
-const NftCard = ({ nft, className = 'd-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-4', clockTop = true, height, onImgLoad }) => {
+const NftCard = ({
+                     listing,
+                     className = 'd-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-4',
+                     clockTop = true,
+                     height,
+                     onImgLoad
+                 }) => {
     const navigate = useNavigate();
     const navigateTo = (link) => {
         navigate(link);
     }
+    const isLoading = true;
+    const [nft, setNft] = useState(null);
+
+    useEffect(() => {
+        async function fetchData() {
+            const nftData = await fetchNftDetail(nft.tokenId);
+            setNft(nftData);
+        }
+
+        console.log(listing)
+        fetchData();
+    }, [listing]);
 
     return (
         <div className={className}>
             <div className="nft__item m-0">
-                { nft.type === 'single_items' ? (
-                    <div className='icontype'><i className="fa fa-bookmark"></i></div>
-                ) : (
-                    <div className='icontype'><i className="fa fa-shopping-basket"></i></div>
-                )
-                }
-                { nft.deadline && clockTop &&
+                <div className='icontype'><i className="fa fa-bookmark"></i></div>
+                <div className='icontype'><i className="fa fa-shopping-basket"></i></div>
+
+                {listing.due_date && clockTop &&
                     <div className="de_countdown">
-                        <Clock deadline={nft.due_date} />
+                        <Clock deadline={listing.due_date}/>
                     </div>
                 }
                 <div className="author_list_pp">
-                    <span onClick={()=> navigateTo(nft.author_link)}>
+                    {
+                        isLoading &&
+                        <span onClick={() => navigateTo("/collection/" + nft.walletAddress)}>
                         <img className="lazy" src={process.env.PUBLIC_URL + "/img/author/author-2.jpg"} alt=""/>
                         <i className="fa fa-check"></i>
                     </span>
+                    }
                 </div>
                 <div className="nft__item_wrap" style={{height: `${height}px`}}>
                     <Outer>
-                    <span>
+                        {
+                            isLoading &&
+                            <span>
                         <img onLoad={onImgLoad} src={nft.image} className="lazy nft__item_preview" alt=""/>
                     </span>
+
+                        }
                     </Outer>
                 </div>
-                { nft.due_date && !clockTop &&
+                {listing.due_date && !clockTop &&
                     <div className="de_countdown">
-                        <Clock deadline={nft.due_date} />
+                        <Clock deadline={listing.due_date}/>
                     </div>
                 }
                 <div className="nft__item_info">
-                    <span onClick={() => navigateTo("/itemDetail/"+nft.tokenId)}>
+                    {
+                        isLoading &&
+                        <span onClick={() => navigateTo("/itemDetail/" + nft.tokenId)}>
                         <h4>{nft.name}</h4>
                     </span>
-
-                        <div className="nft__item_price">
-                            {nft.fee} UNIT
-                        </div>
+                    }
+                    <div className="nft__item_price">
+                        {listing.fee} UNIT
+                    </div>
 
 
                     <div className="nft__item_action">
-                        <span onClick={() => navigateTo("/itemDetail/"+nft.tokenId)}>{ nft.status === 'on_auction' ? 'Place a bid' : 'Buy Now' }</span>
+                        {listing && isLoading ?
+                            <>
+                                <span
+                                    onClick={() => navigateTo("/itemDetail/" + nft.tokenId)}>{nft.status === 'forRent' ? 'Rent now' : 'Buy Now'}</span>
+                            </>
+                            :
+                            <>
+                                <span onClick={() => navigateTo("/itemDetail/" + nft.tokenId)}>Make an offer</span>
+                            </>
+                        }
+
                     </div>
                     <div className="nft__item_like">
                         <i className="fa fa-heart"></i><span>14</span>

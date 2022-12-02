@@ -20,6 +20,7 @@ import Mint from "./components/pages/mint";
 import ItemDetailRedux from "./components/pages/item";
 import ListingForRent from "./components/pages/listingForRent";
 import Collection from "./components/pages/collection";
+import Explore from "./components/pages/explore";
 const GlobalStyles = createGlobalStyle`
   :root {
     scroll-behavior: unset;
@@ -73,6 +74,7 @@ function Main() {
           <Route path={"/mint"} element={<Mint />} />
           <Route path={"/itemDetail/:nftId"} element={<ItemDetailRedux />} />
           <Route path={"/collection/:walletAddress"} element={<Collection />} />
+          <Route path={"/explore"} element={<Explore />} />
         </Routes>
         <ScrollToTop />
       </div>

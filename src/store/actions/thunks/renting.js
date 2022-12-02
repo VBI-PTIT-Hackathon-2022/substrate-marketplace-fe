@@ -22,9 +22,11 @@ export const saveListingNFT = async (account,data) => {
             }        }
     });
     const due_date = new Date(data.due_date).getTime()/1000;
+    const fee = Number(data.fee)*(10**12);
+    console.log(fee)
     const listing = order.createType('Order', {
         lender: data.nftDetail.walletAddress,
-        fee: data.fee,
+        fee: fee,
         token: data.nftDetail.tokenId,
         due_date: due_date,
         paid_type: 1
@@ -52,14 +54,21 @@ export const saveListingNFT = async (account,data) => {
                     data:{
                         lender: data.nftDetail.walletAddress,
                         tokenId: data.nftDetail.tokenId,
-                        fee: Number(data.fee),
+                        fee: data.fee,
                         due_date: data.due_date,
                         paid_type:1,
                         message: message,
                         signature: signature,
                     }
                 })
-                console.log(response);
+                await Axios({
+                    method: 'post', url: '/nfts/'+data.nftDetail.tokenId,
+                    data:{
+                        tokenId: data.nftDetail.tokenId,
+                        custodian: data.nftDetail.custodian,
+                        status: 'forRent',
+                    }
+                })
                 return response;
             } catch (err) {
                 console.log(err);
@@ -73,15 +82,22 @@ export const saveListingNFT = async (account,data) => {
             data:{
                 lender: data.nftDetail.walletAddress,
                 tokenId: data.nftDetail.tokenId,
-                fee: Number(data.fee),
+                fee: data.fee,
                 due_date: data.due_date,
                 paid_type:1,
                 message: message,
                 signature: signature,
             }
         })
-        console.log(response);
-        return response.status;
+        await Axios({
+            method: 'post', url: '/nfts/'+data.nftDetail.tokenId,
+            data:{
+                tokenId: data.nftDetail.tokenId,
+                custodian: data.nftDetail.custodian,
+                status: 'forRent',
+            }
+        })
+        return response;
     } catch (err) {
         console.log(err);
     }
@@ -115,10 +131,12 @@ export async function getMessageRenting (orderRight){
             }        }
     });
     const due_date = new Date(orderRight.due_date).getTime()/1000;
+    const fee = Number(orderRight.fee)*(10**12);
+    console.log(fee)
     const orderRental = order.createType('Order', {
         lender: orderRight.lenderAddress,
         borrower: orderRight.borrowerAddress,
-        fee: orderRight.fee,
+        fee: fee,
         token: orderRight.tokenId,
         due_date: due_date,
         paid_type: 1

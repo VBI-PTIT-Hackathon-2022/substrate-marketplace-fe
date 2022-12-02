@@ -11,13 +11,19 @@ export const fetchNftsBreakdown = (user) => async (dispatch, getState) => {
     dispatch(actions.getNftBreakdown.request(Canceler.cancel));
 
     try {
-
-        const {data} = await Axios.post(`/users/`+user.walletAddress, {
-            cancelToken: Canceler.token,
-            body: {name:user.name}
-        });
-        console.log(data)
-        dispatch(actions.getNftBreakdown.success(data.nfts));
+        if(user){
+            const {data} = await Axios.get(`/listings/`+ user.walletAddress, {
+                cancelToken: Canceler.token,
+            });
+            console.log(data)
+            dispatch(actions.getNftBreakdown.success(data));
+        } else {
+            const {data} = await Axios.get(`/listings`, {
+                cancelToken: Canceler.token,
+            });
+            console.log(data)
+            dispatch(actions.getNftBreakdown.success(data));
+        }
     } catch (err) {
         dispatch(actions.getNftBreakdown.failure(err));
     }
@@ -45,11 +51,20 @@ export const fetchNftDetail = (nftId) => async (dispatch) => {
         const response = await Axios({
             method: 'get', url: '/nfts/' + nftId
         })
-        console.log(response)
+
         dispatch(actions.getNftDetail.success(response.data));
     } catch (err) {
         dispatch(actions.getNftDetail.failure(err));
     }
 };
+
+export const getUserRentedNFT = async (walletAddress) => {
+    const response = await Axios({
+        method: 'GET', url: '/users/rent/' + walletAddress,
+    })
+    const data = response.data;
+    return data;
+
+}
 
 

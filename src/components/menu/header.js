@@ -88,8 +88,8 @@ function Main(props) {
                            type="text"/>
                 </div>
                 <div className="navbar-item">
-                    <NavLink to={"/explorer"} >
-                        Explorer
+                    <NavLink to={"/explore"} >
+                        Explore
                     </NavLink>
                 </div>
                 <div className="navbar-item">

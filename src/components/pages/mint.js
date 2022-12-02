@@ -1,7 +1,5 @@
 import React, {useCallback, useState} from "react";
 import {createGlobalStyle} from 'styled-components';
-import ColumnNewMint from '../components/ColumnNewMint';
-import api from "../../core/api";
 import Footer from '../components/footer';
 import {TxButton} from "../../substrate-lib/components";
 import {useSubstrateState} from "../../substrate-lib";
@@ -83,11 +81,11 @@ export default function Minter(props) {
     }
 
 
-    const onSelectNft = (nft) => {
-        setName(nft.title);
-        setDescription(nft.description);
-        setURL(api.baseUrl + nft.preview_image.url);
-    }
+    // const onSelectNft = (nft) => {
+    //     setName(nft.title);
+    //     setDescription(nft.description);
+    //     setURL(api.baseUrl + nft.preview_image.url);
+    // }
 
     const isEmpty = useCallback(() => {
         return url.trim() === '' || name.trim() === '' || description.trim() === '';
@@ -122,9 +120,6 @@ export default function Minter(props) {
                                 </button>
                                 <br/>
                                 <br/>
-                                {!manualInput ? (
-                                    <ColumnNewMint onSelectNft={onSelectNft} showLoadMore={false} authorId="1"/>
-                                ) : (
                                     <form>
                                         <h2>Link to image asset: </h2>
                                         <input
@@ -148,7 +143,6 @@ export default function Minter(props) {
                                             onChange={(event) => setDescription(event.target.value)}
                                         />
                                     </form>
-                                )}
                                 {!isEmpty() &&
                                     <>
                                         <span>NFT Name: {name}</span>

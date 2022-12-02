@@ -26,7 +26,7 @@ export const nftFilter = createStructuredSelector({
     nftTitle: (state) => state.filters.filterNftTitle
 });
 
-export const nftItems = createSelector(nftFilter, nftBreakdownState, ( nfts ) => {
+export const nftItems = createSelector( nftBreakdownState, ( nfts ) => {
     let { data } = nfts;
     
     if(!data) {

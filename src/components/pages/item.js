@@ -52,6 +52,7 @@ export default function ItemDetailRedux(props) {
     const [openMenu0, setOpenMenu0] = React.useState(true);
     const [openMenu, setOpenMenu] = React.useState(false);
     const [openMenu1, setOpenMenu1] = React.useState(false);
+    const [custodian, setCustodian] = React.useState(null);
     const navigate = useNavigate();
 
     const handleBtnClick0 = () => {
@@ -82,7 +83,7 @@ export default function ItemDetailRedux(props) {
     const dispatch = useDispatch();
     const nftDetailState = useSelector(selectors.nftDetailState);
     const nft = nftDetailState.data ? nftDetailState.data : [];
-    const {keyring}  = useSubstrateState();
+    const {keyring} = useSubstrateState();
     const [ownerNFT, setOwnerNFT] = useState(null);
     const [openCheckout, setOpenCheckout] = useState(false);
     const [openCheckoutbid, setOpenCheckoutbid] = useState(false);
@@ -92,19 +93,26 @@ export default function ItemDetailRedux(props) {
     const [feePaid, setFeePaid] = useState(0);
     const [status, setStatus] = useState('')
     const [orderRight, setOrderRight] = useState(null);
-    async function getOwnerName(props) {
-        const data = await getUserDetail(props);
-        setOwnerNFT(data.name);
+
+    async function getName(owner, custodian) {
+        const ownerData = await getUserDetail(owner);
+        setOwnerNFT(ownerData.name);
+        const custodianData = await getUserDetail(custodian);
+        setCustodian(custodianData.name);
     }
 
     useEffect(() => {
         let unsubscribe
         // If the user has selected an address, create a new subscription
         currentAccount && api.query.system
-            .account(currentAccount.address, balance => setAccountBalance(balance.data.free.toHuman()))
+            .account(currentAccount.address, balance => {
+                const value = balance.data.free.toHuman().replace(/,/g,'');
+                console.log(value);
+                setAccountBalance(value/(10**12));
+            })
             .then(unsub => (unsubscribe = unsub))
             .catch(console.error)
-        
+
         return () => unsubscribe && unsubscribe()
     }, [api, currentAccount])
 
@@ -121,8 +129,9 @@ export default function ItemDetailRedux(props) {
         async function fetchData() {
             await dispatch(fetchNftDetail(nftId));
         }
+
         fetchData();
-        getOwnerName(nft.walletAddress);
+        getName(nft.walletAddress, nft.custodian);
         getDetailRenting(nft.walletAddress, nftId);
     }, [dispatch, nftId, nft.walletAddress]);
 
@@ -131,10 +140,9 @@ export default function ItemDetailRedux(props) {
         const now = new Date().getTime();
         const due_date = new Date(evt.target.value).getTime();
         console.log(now, due_date);
-        const quantity = ((due_date - now) / 1000) / 86400;
-        console.log(parseInt(quantity));
-        if (parseInt(quantity) < 1) return;
-        setFeePaid(parseInt(quantity) * listingDetail.fee);
+        const days = ((due_date - now) / 1000) / 86400;
+        if (parseInt(days) < 1) return;
+        setFeePaid(parseInt(days) * listingDetail.fee);
         const order = {
             lenderAddress: listingDetail.lender,
             borrowerAddress: currentAccount.address,
@@ -218,7 +226,8 @@ export default function ItemDetailRedux(props) {
                             <div className="de_tab_content">
                                 {openMenu0 && (<div className="tab-1 onStep fadeIn">
                                     <div className="d-block mb-3">
-                                        <div className="mr40">
+                                        {nft.status === "isRenting" &&
+                                            <div className="mr40">
                                             <h6>Custodian</h6>
                                             <div className="item_author">
                                                 <div className="author_list_pp">
@@ -230,21 +239,23 @@ export default function ItemDetailRedux(props) {
                                                     </span>
                                                 </div>
                                                 <div className="author_list_info">
-                                                    <span>{nft.walletAddress}</span>
+                                                    <span>{custodian}</span>
+                                                    <br/>
+                                                    <span>{nft.custodian}</span>
+
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div>}
 
                                         <div className="row mt-5">
                                             {nft.attributes && nft.attributes.map((value) => {
-                                                return (
-                                                    <div className="col-lg-4 col-md-6 col-sm-6">
-                                                        <div className="nft_attr">
-                                                            <h5>{value[0].trait_type}</h5>
-                                                            <h4>{value[0].value}</h4>
-                                                            <span>78% have this trait</span>
-                                                        </div>
-                                                    </div>)
+                                                return (<div className="col-lg-4 col-md-6 col-sm-6">
+                                                    <div className="nft_attr">
+                                                        <h5>{value[0].trait_type}</h5>
+                                                        <h4>{value[0].value}</h4>
+                                                        <span>78% have this trait</span>
+                                                    </div>
+                                                </div>)
                                             })}
 
                                         </div>
@@ -297,50 +308,40 @@ export default function ItemDetailRedux(props) {
                                         <span>Waiting for connecting ....</span>
 
                                     </> : <>
-                                        {currentAccount.address === nft.walletAddress ?
-                                            <>
-                                                {listingDetail?
-                                                    <>
-                                                        <button className='btn-main lead mb-5 mr15'
-                                                                onClick={() => {
-                                                                    const path = '/listingForRent/' + nftId;
-                                                                    navigate(path, {state: nft});
-                                                                }}>Cancel Listing for Rent
-                                                        </button>
-                                                    </>
-                                                    :
-                                                    <>
-                                                        <button className='btn-main lead mb-5 mr15'
-                                                                onClick={() => {
-                                                                    const path = '/listingForRent/' + nftId;
-                                                                    navigate(path, {state: nft});
-                                                                }}>Listing for Rent
-                                                        </button>
-                                                    </>
-                                                }
-
-                                                <button className='btn-main btn2 lead mb-5'
-                                                >List for Sell
+                                        {currentAccount.address === nft.walletAddress ? <>
+                                            {listingDetail ? <>
+                                                <button className='btn-main lead mb-5 mr15'
+                                                        onClick={() => {
+                                                            const path = '/listingForRent/' + nftId;
+                                                            navigate(path, {state: nft});
+                                                        }}>Cancel Listing for Rent
                                                 </button>
-                                            </>
-                                            : <>
-                                                {listingDetail?
-                                               <>
-                                                   <button className='btn-main lead mb-5 mr15'
-                                                           onClick={() => setOpenCheckout(true)}>Rent now
-                                                   </button>
-                                               </>
-                                                    :
-                                                    <>
-                                                        <button className='btn-main lead mb-5 mr15'
-                                                                onClick={() => setOpenCheckoutbid(true)}>Buy now
-                                                        </button>
-                                                    </>
-                                                }
-
-                                                <button className='btn-main btn2 lead mb-5'
-                                                > Place an offer
+                                            </> : <>
+                                                <button className='btn-main lead mb-5 mr15'
+                                                        onClick={() => {
+                                                            const path = '/listingForRent/' + nftId;
+                                                            navigate(path, {state: nft});
+                                                        }}>Listing for Rent
                                                 </button>
+                                            </>}
+
+                                            <button className='btn-main btn2 lead mb-5'
+                                            >List for Sell
+                                            </button>
+                                        </> : <>
+                                            {listingDetail && nft.status === "forRent" ? <>
+                                                <button className='btn-main lead mb-5 mr15'
+                                                        onClick={() => setOpenCheckout(true)}>Rent now
+                                                </button>
+                                            </> : <>
+                                                <button className='btn-main lead mb-5 mr15' disabled
+                                                        onClick={() => setOpenCheckoutbid(true)}>Buy now
+                                                </button>
+                                            </>}
+
+                                            <button className='btn-main btn2 lead mb-5'
+                                            > Place an offer
+                                            </button>
 
 
                                         </>}
@@ -362,14 +363,15 @@ export default function ItemDetailRedux(props) {
                     <h3>Checkout </h3>
                 </div>
                 <p>You are about to rent a <span className="bold">{nft.name} </span>
-                     from <span className="bold">  {nft.walletAddress}</span></p>
+                    from <span className="bold">  {nft.walletAddress}</span></p>
                 <div className='detailcheckout mt-4'>
                     <div className='listcheckout'>
                         <h6>
                             Enter expiration date.
                             <span className="color"> Before the listing stops on {listingDetail.due_date} </span>
                         </h6>
-                        <input type="date" name="due_date" id="due_date" onChange={evt => updateInputValue(evt)} className="form-control" />
+                        <input type="date" name="due_date" id="due_date" onChange={evt => updateInputValue(evt)}
+                               className="form-control"/>
                     </div>
 
                 </div>
@@ -383,7 +385,7 @@ export default function ItemDetailRedux(props) {
                 <div className='heading'>
                     <p>Fee rent per day</p>
                     <div className='subtotal'>
-                        {listingDetail.fee} UNIT
+                        {Number(listingDetail.fee).toFixed(2)} UNIT
                     </div>
                 </div>
                 <div className='heading'>
@@ -398,8 +400,8 @@ export default function ItemDetailRedux(props) {
                           attrs={{
                               palletRpc: 'renting',
                               callable: 'createRental',
-                              inputParams: ["0x"+Buffer.from(keyring.decodeAddress(listingDetail.lender)).toString('hex'),"0x"+Buffer.from(currentAccount.addressRaw).toString('hex'),listingDetail.message, listingDetail.signature, orderRight,"0x0000"],
-                              paramFields: [true,true,true,true,true,true],
+                              inputParams: ["0x" + Buffer.from(keyring.decodeAddress(listingDetail.lender)).toString('hex'), "0x" + Buffer.from(currentAccount.addressRaw).toString('hex'), listingDetail.message, listingDetail.signature, orderRight, "0x0000"],
+                              paramFields: [true, true, true, true, true, true],
                           }}>
                     Rent now
                 </TxButton>

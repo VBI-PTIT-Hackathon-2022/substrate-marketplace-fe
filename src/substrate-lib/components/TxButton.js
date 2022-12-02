@@ -21,6 +21,7 @@ function TxButton({
     const [sudoKey, setSudoKey] = useState(null)
     const [extrinsic, setExtrinsic] = useState(null)
     const {palletRpc, callable, inputParams, paramFields} = attrs
+    const [isActive, setActive] = useState("active");
     const navigate = useNavigate();
     const isQuery = () => type === 'QUERY'
     const isSudo = () => type === 'SUDO-TX'
@@ -83,6 +84,11 @@ function TxButton({
         status.isFinalized
             ? setStatus(`😉 Finalized. Block hash: ${status.asFinalized.toString()}`)
             : setStatus(`Current transaction status: ${status.type}`)
+        const data = await fetchUserDetail(currentAccount.meta.name.toUpperCase(), currentAccount.address);
+        if (status.isFinalized) {
+            const path = "/itemDetail/"+data.data.nfts[data.data.nfts.length-1].tokenId;
+            navigate(path);
+        }
     }
 
 
@@ -188,7 +194,7 @@ function TxButton({
             unsub()
             setUnsub(null)
         }
-
+        setActive("disable")
         setStatus('Sending...')
 
         const asyncFunc =
@@ -303,6 +309,7 @@ function TxButton({
                 !palletRpc ||
                 !callable ||
                 !allParamsFilled() ||
+                isActive === "disable" ||
                 // These txs required currentAccount to be set
                 ((isSudo() || isUncheckedSudo() || isSigned()) && !currentAccount) ||
                 ((isSudo() || isUncheckedSudo()) && !isSudoer(currentAccount))
