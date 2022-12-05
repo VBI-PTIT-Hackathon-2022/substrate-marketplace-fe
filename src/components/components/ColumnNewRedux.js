@@ -6,7 +6,7 @@ import { clearNfts, clearFilter } from '../../store/actions';
 import NftCard from './NftCard';
 import { shuffleArray } from '../../store/utils';
 //react functional component
-const ColumnNewRedux = ({ showLoadMore = true, shuffle = false, user }) => {
+const ColumnNewRedux = ({ showLoadMore = true, shuffle = false, collectionOwned= false, user }) => {
     const dispatch = useDispatch();
     const nftItems = useSelector(selectors.nftItems);
     const nfts = nftItems ? shuffle ? shuffleArray(nftItems) : nftItems : [];
@@ -19,9 +19,17 @@ const ColumnNewRedux = ({ showLoadMore = true, shuffle = false, user }) => {
         }
     }
 
-    useEffect(async () => {
-        await dispatch(actions.fetchNftsBreakdown(user));
-        console.log(nfts)
+    useEffect(() => {
+        async function fetchData(){
+            if(!collectionOwned){
+                await dispatch(actions.fetchNftsBreakdown(user));
+                console.log(nfts)
+            } else {
+                await dispatch(actions.fetchNftOwned(user));
+                console.log(nfts)
+            }
+        }
+        fetchData();
     }, [dispatch, user]);
 
     //will run when component unmounted
@@ -33,7 +41,12 @@ const ColumnNewRedux = ({ showLoadMore = true, shuffle = false, user }) => {
     },[dispatch]);
 
     const loadMore = () => {
-        dispatch(actions.fetchNftsBreakdown(user));
+        if (!collectionOwned){
+            dispatch(actions.fetchNftsBreakdown(user));
+        } else {
+            dispatch(actions.fetchNftOwned(user));
+        }
+
     }
 
     return (
@@ -42,7 +55,7 @@ const ColumnNewRedux = ({ showLoadMore = true, shuffle = false, user }) => {
             {nfts && nfts.map( (nft, index) => (
                 <NftCard listing={nft} key={index} onImgLoad={onImgLoad} height={height} />
             ))}
-            { showLoadMore && nfts.length <= 20 &&
+            { showLoadMore && nfts.length >= 20 &&
                 <div className='col-lg-12'>
                     <div className="spacer-single"></div>
                     <span onClick={loadMore} className="btn-main lead m-auto">Load More</span>

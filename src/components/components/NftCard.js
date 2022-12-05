@@ -1,8 +1,10 @@
-import React, {memo, useEffect, useState} from 'react';
+import React, {memo, useEffect} from 'react';
 import styled from "styled-components";
 import Clock from "./Clock";
 import {useNavigate} from 'react-router-dom';
 import {fetchNftDetail} from "../../store/actions/thunks";
+import {useDispatch, useSelector} from "react-redux";
+import * as selectors from "../../store/selectors";
 
 const Outer = styled.div`
   display: flex;
@@ -22,21 +24,22 @@ const NftCard = ({
                      onImgLoad
                  }) => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const nftDetailState = useSelector(selectors.nftDetailState);
+    const nft = nftDetailState.data ? nftDetailState.data : [];
     const navigateTo = (link) => {
         navigate(link);
     }
     const isLoading = true;
-    const [nft, setNft] = useState(null);
 
     useEffect(() => {
         async function fetchData() {
-            const nftData = await fetchNftDetail(nft.tokenId);
-            setNft(nftData);
+            await dispatch(fetchNftDetail(listing.tokenId));
         }
 
         console.log(listing)
         fetchData();
-    }, [listing]);
+    }, [dispatch, listing]);
 
     return (
         <div className={className}>
@@ -61,7 +64,7 @@ const NftCard = ({
                 <div className="nft__item_wrap" style={{height: `${height}px`}}>
                     <Outer>
                         {
-                            isLoading &&
+                            isLoading && nft&&
                             <span>
                         <img onLoad={onImgLoad} src={nft.image} className="lazy nft__item_preview" alt=""/>
                     </span>
@@ -87,14 +90,14 @@ const NftCard = ({
 
 
                     <div className="nft__item_action">
-                        {listing && isLoading ?
+                        {listing && nft.status !="isRenting" ?
                             <>
                                 <span
-                                    onClick={() => navigateTo("/itemDetail/" + nft.tokenId)}>{nft.status === 'forRent' ? 'Rent now' : 'Buy Now'}</span>
+                                    onClick={() => navigateTo("/itemDetail/" + nft.tokenId)}>{nft.status === 'forRent'  ? 'Rent now' : 'Buy Now'}</span>
                             </>
                             :
                             <>
-                                <span onClick={() => navigateTo("/itemDetail/" + nft.tokenId)}>Make an offer</span>
+                                <span onClick={() => navigateTo("/itemDetail/" + nft.tokenId)}>Rented</span>
                             </>
                         }
 

@@ -8,7 +8,7 @@ export const fetchAuthorList = (authorId) => async (dispatch) => {
 
   try {
     let filter = authorId ? 'id='+authorId : '';
-    const { data } = await Axios.get(`${api.baseUrl}${api.authors}?${filter}`, {
+    const { data } = await Axios.get('/users/'+filter, {
       cancelToken: Canceler.token,
       params: {}
     });

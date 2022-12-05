@@ -8,7 +8,6 @@ import Clock from "./Clock";
 import { carouselNew5 } from './constants';
 import * as selectors from '../../store/selectors';
 import { fetchNftsBreakdown } from "../../store/actions/thunks";
-import api from "../../core/api";
 
 const Outer = styled.div`
   display: flex;
@@ -50,14 +49,14 @@ const CarouselNewRedux = () => {
                     }
                     <div className="author_list_pp">
                         <span onClick={()=> window.open("/home1", "_self")}>                                    
-                            <img className="lazy" src={api.baseUrl + nft.author.avatar.url} alt=""/>
+                            <img className="lazy" src={process.env.PUBLIC_URL + "/img/author/author-2.jpg"} alt=""/>
                             <i className="fa fa-check"></i>
                         </span>
                     </div>
                     <div className="nft__item_wrap" style={{height: `${height}px`}}>
                       <Outer>
                         <span>
-                            <img src={api.baseUrl + nft.preview_image.url} className="lazy nft__item_preview" onLoad={onImgLoad} alt=""/>
+                            <img src={nft.img} className="lazy nft__item_preview" onLoad={onImgLoad} alt=""/>
                         </span>
                       </Outer>
                     </div>

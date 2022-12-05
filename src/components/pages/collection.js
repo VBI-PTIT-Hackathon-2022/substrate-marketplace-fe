@@ -42,13 +42,13 @@ const Collection = function({walletAddress})  {
     };
 
 
-    useEffect( async () => {
-        console.log(userWallet);
-        const data = await fetchUserDetail(" ", userWallet);
-        setUserDetail(data.data)
-        console.log(data)
-
-    },[]);
+    useEffect( () => {
+        async function fetchData(){
+            const data = await fetchUserDetail(" ", userWallet);
+            setUserDetail(data.data)
+        }
+        fetchData();
+    },[userWallet]);
 
 
     return (
@@ -119,7 +119,7 @@ const Collection = function({walletAddress})  {
                     <div id='zero2' className='onStep fadeIn'>
                         {userDetail?
                             <>
-                                <ColumnNewRedux shuffle showLoadMore={false} user={userDetail}/>
+                                <ColumnNewRedux collectionOwned ={true} shuffle showLoadMore={false} user={userDetail}/>
                             </>
                             :
                             <>

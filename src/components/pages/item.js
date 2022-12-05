@@ -385,7 +385,7 @@ export default function ItemDetailRedux(props) {
                 <div className='heading'>
                     <p>Fee rent per day</p>
                     <div className='subtotal'>
-                        {Number(listingDetail.fee).toFixed(2)} UNIT
+                        {Number(listingDetail.fee).toFixed(5)} UNIT
                     </div>
                 </div>
                 <div className='heading'>

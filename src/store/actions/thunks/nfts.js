@@ -1,6 +1,5 @@
 import {Axios, Canceler} from '../../../core/axios';
 import * as actions from '../../actions';
-import api from '../../../core/api';
 
 export const fetchNftsBreakdown = (user) => async (dispatch, getState) => {
 
@@ -29,18 +28,18 @@ export const fetchNftsBreakdown = (user) => async (dispatch, getState) => {
     }
 };
 
-export const fetchNftShowcase = () => async (dispatch) => {
+export const fetchNftOwned = (user) => async (dispatch) => {
 
-    dispatch(actions.getNftShowcase.request(Canceler.cancel));
+    dispatch(actions.getNftBreakdown.request(Canceler.cancel));
 
     try {
-        const {data} = await Axios.get(`${api.baseUrl}${api.nftShowcases}`, {
+        const {data} = await Axios.get("/nfts/owned/"+user.walletAddress, {
             cancelToken: Canceler.token,
             params: {}
         });
-        dispatch(actions.getNftShowcase.success(data));
+        dispatch(actions.getNftBreakdown.success(data));
     } catch (err) {
-        dispatch(actions.getNftShowcase.failure(err));
+        dispatch(actions.getNftBreakdown.failure(err));
     }
 };
 
