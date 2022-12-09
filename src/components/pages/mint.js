@@ -104,7 +104,7 @@ export default function Minter(props) {
                     <h1>Mint your NFT</h1>
                     <br/><br/>
                     {
-                        currentAccount.addressRaw != null &&
+                        currentAccount && currentAccount.addressRaw != null &&
                         <div className={"row"}>
                             <div className="col-lg-7 offset-lg-1 mb-5">
                                 <form id="form-create-item" className="form-border" action="#">

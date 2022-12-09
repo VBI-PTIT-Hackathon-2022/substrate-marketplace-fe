@@ -28,8 +28,10 @@ export const fetchNftsBreakdown = (user) => async (dispatch, getState) => {
     }
 };
 
-export const fetchNftOwned = (user) => async (dispatch) => {
+export const fetchNftOwned = (user) => async (dispatch,getState) => {
 
+    const state = getState();
+    console.log(state);
     dispatch(actions.getNftBreakdown.request(Canceler.cancel));
 
     try {

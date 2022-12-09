@@ -30,7 +30,7 @@ const ColumnNewRedux = ({ showLoadMore = true, shuffle = false, collectionOwned=
             }
         }
         fetchData();
-    }, [dispatch, user]);
+    }, [dispatch, collectionOwned,user]);
 
     //will run when component unmounted
     useEffect(() => {
@@ -51,7 +51,6 @@ const ColumnNewRedux = ({ showLoadMore = true, shuffle = false, collectionOwned=
 
     return (
         <div className='row'>
-            {console.log(nfts)}
             {nfts && nfts.map( (nft, index) => (
                 <NftCard listing={nft} key={index} onImgLoad={onImgLoad} height={height} />
             ))}
