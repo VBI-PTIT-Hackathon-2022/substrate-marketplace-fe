@@ -64,15 +64,8 @@ export default function Minter(props) {
     const [description, setDescription] = useState("");
     const [url, setURL] = useState("");
     const [tokenURI, setTokenURI] = useState("");
-    const [manualInput, setManualInput] = useState(false);
     const {currentAccount} = useSubstrateState()
 
-    const toggleInput = () => {
-        setManualInput(!manualInput)
-        setName("");
-        setDescription("");
-        setURL("");
-    };
 
     const onMintPressed = async () => {
         const {uri} = await metadata(url, name, description);
@@ -115,9 +108,6 @@ export default function Minter(props) {
                         {
                             currentAccount.addressRaw != null &&
                             <>
-                                <button id="toggleButton" className="btn-main" onClick={() => toggleInput()}>
-                                    Switch to {manualInput ? 'select' : 'manual'} input
-                                </button>
                                 <br/>
                                 <br/>
                                     <form>
