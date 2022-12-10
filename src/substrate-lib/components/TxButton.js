@@ -6,11 +6,13 @@ import {useSubstrateState} from '../'
 import utils from '../utils'
 import {useNavigate} from "react-router-dom";
 import {fetchUserDetail} from "../../store/actions/thunks";
+import {cancelListing} from "../../store/actions/thunks/renting";
 
 function TxButton({
                       attrs = null,
                       disabled = false,
                       label,
+                      input,
                       setStatus,
                       type = 'QUERY',
                       txOnClickHandler = null,
@@ -84,10 +86,17 @@ function TxButton({
         status.isFinalized
             ? setStatus(`😉 Finalized. Block hash: ${status.asFinalized.toString()}`)
             : setStatus(`Current transaction status: ${status.type}`)
-        const data = await fetchUserDetail(currentAccount.meta.name.toUpperCase(), currentAccount.address);
         if (status.isFinalized) {
-            const path = "/itemDetail/"+data.data.nfts[data.data.nfts.length-1].tokenId;
-            navigate(path);
+            navigate(-1);
+        }
+    }
+
+    const cancelListingHandle = async ({status}) => {
+        status.isFinalized
+            ? setStatus(`😉 Finalized. Block hash: ${status.asFinalized.toString()}`)
+            : setStatus(`Current transaction status: ${status.type}`)
+        if(status.isFinalized){
+            await cancelListing(input);
         }
     }
 
@@ -141,6 +150,12 @@ function TxButton({
         if (callable ==="createRental") {
             unsub = await txExecute
                 .signAndSend(...fromAcct, rentalHandle)
+                .catch(txErrHandler)
+        }
+
+        if (callable ==="cancelOffer") {
+            unsub = await txExecute
+                .signAndSend(...fromAcct, cancelListingHandle)
                 .catch(txErrHandler)
         }
 
@@ -301,7 +316,7 @@ function TxButton({
         <button
             basic
             id="mintButton"
-            className="btn-main"
+            className="btn-main lead mb-5 mr15"
             type="submit"
             onClick={transaction}
             disabled={

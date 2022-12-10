@@ -133,7 +133,7 @@ export default function ItemDetailRedux(props) {
         fetchData();
         getName(nft.walletAddress, nft.custodian);
         getDetailRenting(nft.walletAddress, nftId);
-    }, [dispatch, nftId, nft.walletAddress]);
+    }, [dispatch, nftId, nft.walletAddress,nft.custodian]);
 
 
     async function updateInputValue(evt) {
@@ -310,12 +310,18 @@ export default function ItemDetailRedux(props) {
                                     </> : <>
                                         {currentAccount.address === nft.walletAddress ? <>
                                             {listingDetail ? <>
-                                                <button className='btn-main lead mb-5 mr15'
-                                                        onClick={() => {
-                                                            const path = '/listingForRent/' + nftId;
-                                                            navigate(path, {state: nft});
-                                                        }}>Cancel Listing for Rent
-                                                </button>
+                                                <TxButton id="mintButton" className="btn-main lead mb-5 mr15" label="Cancel listing"
+                                                          type="SIGNED-TX"
+                                                          input={listingDetail}
+                                                          setStatus={setStatus}
+                                                          attrs={{
+                                                              palletRpc: 'renting',
+                                                              callable: 'cancelOffer',
+                                                              inputParams: [listingDetail.message,true],
+                                                              paramFields: [true, true],
+                                                          }}>
+                                                </TxButton>
+
                                             </> : <>
                                                 <button className='btn-main lead mb-5 mr15'
                                                         onClick={() => {
@@ -329,15 +335,19 @@ export default function ItemDetailRedux(props) {
                                             >List for Sell
                                             </button>
                                         </> : <>
-                                            {listingDetail && nft.status === "forRent" ? <>
-                                                <button className='btn-main lead mb-5 mr15'
-                                                        onClick={() => setOpenCheckout(true)}>Rent now
-                                                </button>
-                                            </> : <>
-                                                <button className='btn-main lead mb-5 mr15' disabled
-                                                        onClick={() => setOpenCheckoutbid(true)}>Buy now
-                                                </button>
-                                            </>}
+                                            {listingDetail && nft.status === "forRent" ?
+                                                <>
+                                                    <button className='btn-main lead mb-5 mr15'
+                                                            onClick={() => setOpenCheckout(true)}>Rent now
+                                                    </button>
+                                                </>
+                                                :
+                                                <>
+                                                    <button className='btn-main lead mb-5 mr15'
+                                                            onClick={() => setOpenCheckout(true)}>Buy now
+                                                    </button>
+                                                </>
+                                            }
 
                                             <button className='btn-main btn2 lead mb-5'
                                             > Place an offer
@@ -385,7 +395,7 @@ export default function ItemDetailRedux(props) {
                 <div className='heading'>
                     <p>Fee rent per day</p>
                     <div className='subtotal'>
-                        {Number(listingDetail.fee).toFixed(2)} UNIT
+                        {Number(listingDetail.fee).toFixed(5)} UNIT
                     </div>
                 </div>
                 <div className='heading'>

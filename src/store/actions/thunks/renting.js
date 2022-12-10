@@ -118,6 +118,20 @@ export const getListingDetail = async (account,tokenId) => {
     }
 }
 
+export const cancelListing = async (listing) => {
+    console.log(listing)
+    try {
+        const response = await Axios({
+            method: 'delete', url: '/listings/'+listing.tokenId,
+        })
+
+        console.log(response);
+        return response;
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 export async function getMessageRenting (orderRight){
     const order = await ApiPromise.create({
         types: {
