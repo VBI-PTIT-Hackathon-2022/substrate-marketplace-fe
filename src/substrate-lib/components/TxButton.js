@@ -87,7 +87,7 @@ function TxButton({
             ? setStatus(`😉 Finalized. Block hash: ${status.asFinalized.toString()}`)
             : setStatus(`Current transaction status: ${status.type}`)
         if (status.isFinalized) {
-            navigate(-1);
+            navigate(0);
         }
     }
 

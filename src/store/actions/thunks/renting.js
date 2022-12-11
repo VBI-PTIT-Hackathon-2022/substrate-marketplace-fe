@@ -89,6 +89,7 @@ export const saveListingNFT = async (account,data) => {
                 signature: signature,
             }
         })
+        console.log(data.nftDetail.tokenId)
         await Axios({
             method: 'post', url: '/nfts/'+data.nftDetail.tokenId,
             data:{

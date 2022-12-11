@@ -68,4 +68,12 @@ export const getUserRentedNFT = async (walletAddress) => {
 
 }
 
+export const getNFT = async (nftId) => {
+    const response = await Axios({
+        method: 'GET', url: '/nfts/' + nftId
+    })
+    const data = response.data;
+    return data;
+}
+
 
