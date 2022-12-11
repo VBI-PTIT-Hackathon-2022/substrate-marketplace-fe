@@ -6,11 +6,13 @@ import {useSubstrateState} from '../'
 import utils from '../utils'
 import {useNavigate} from "react-router-dom";
 import {fetchUserDetail} from "../../store/actions/thunks";
+import {cancelListing} from "../../store/actions/thunks/renting";
 
 function TxButton({
                       attrs = null,
                       disabled = false,
                       label,
+                      input,
                       setStatus,
                       type = 'QUERY',
                       txOnClickHandler = null,
@@ -21,6 +23,7 @@ function TxButton({
     const [sudoKey, setSudoKey] = useState(null)
     const [extrinsic, setExtrinsic] = useState(null)
     const {palletRpc, callable, inputParams, paramFields} = attrs
+    const [isActive, setActive] = useState("active");
     const navigate = useNavigate();
     const isQuery = () => type === 'QUERY'
     const isSudo = () => type === 'SUDO-TX'
@@ -71,13 +74,29 @@ function TxButton({
             ? setStatus(`😉 Finalized. Block hash: ${status.asFinalized.toString()}`)
             : setStatus(`Current transaction status: ${status.type}`)
         console.log(extrinsic)
-        console.log("123",currentAccount.meta.name)
         const data = await fetchUserDetail(currentAccount.meta.name.toUpperCase(), currentAccount.address);
         if (status.isFinalized) {
-
-            console.log(data.nfts[data.nfts.length-1].tokenId)
-            const path = "/itemDetail/"+data.nfts[data.nfts.length-1].tokenId;
+            console.log(data.data.nfts[data.data.nfts.length-1].tokenId)
+            const path = "/itemDetail/"+data.data.nfts[data.data.nfts.length-1].tokenId;
             navigate(path);
+        }
+    }
+
+    const rentalHandle = async ({status}) => {
+        status.isFinalized
+            ? setStatus(`😉 Finalized. Block hash: ${status.asFinalized.toString()}`)
+            : setStatus(`Current transaction status: ${status.type}`)
+        if (status.isFinalized) {
+            navigate(-1);
+        }
+    }
+
+    const cancelListingHandle = async ({status}) => {
+        status.isFinalized
+            ? setStatus(`😉 Finalized. Block hash: ${status.asFinalized.toString()}`)
+            : setStatus(`Current transaction status: ${status.type}`)
+        if(status.isFinalized){
+            await cancelListing(input);
         }
     }
 
@@ -118,7 +137,7 @@ function TxButton({
         const fromAcct = await getFromAcct()
         const transformed = transformParams(paramFields, inputParams)
         // transformed can be empty parameters
-
+        console.log(inputParams)
         const txExecute = transformed
             ? api.tx[palletRpc][callable](...transformed)
             : api.tx[palletRpc][callable]()
@@ -126,6 +145,17 @@ function TxButton({
         if (callable ==="mintTo") {
              unsub = await txExecute
                 .signAndSend(...fromAcct, mintHandle)
+                .catch(txErrHandler)
+        }
+        if (callable ==="createRental") {
+            unsub = await txExecute
+                .signAndSend(...fromAcct, rentalHandle)
+                .catch(txErrHandler)
+        }
+
+        if (callable ==="cancelOffer") {
+            unsub = await txExecute
+                .signAndSend(...fromAcct, cancelListingHandle)
                 .catch(txErrHandler)
         }
 
@@ -179,7 +209,7 @@ function TxButton({
             unsub()
             setUnsub(null)
         }
-
+        setActive("disable")
         setStatus('Sending...')
 
         const asyncFunc =
@@ -286,7 +316,7 @@ function TxButton({
         <button
             basic
             id="mintButton"
-            className="btn-main"
+            className="btn-main lead mb-5 mr15"
             type="submit"
             onClick={transaction}
             disabled={
@@ -294,6 +324,7 @@ function TxButton({
                 !palletRpc ||
                 !callable ||
                 !allParamsFilled() ||
+                isActive === "disable" ||
                 // These txs required currentAccount to be set
                 ((isSudo() || isUncheckedSudo() || isSigned()) && !currentAccount) ||
                 ((isSudo() || isUncheckedSudo()) && !isSudoer(currentAccount))

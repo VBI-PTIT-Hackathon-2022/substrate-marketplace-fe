@@ -1,14 +1,12 @@
 import React, { memo, useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import * as selectors from '../../store/selectors';
+import {useDispatch, useSelector} from 'react-redux';
 import * as actions from '../../store/actions/thunks';
+import * as selectors from '../../store/selectors';
 import { clearNfts, clearFilter } from '../../store/actions';
-import NftMintCard from './NFTMintCard';
+import NftCard from './NftCard';
 import { shuffleArray } from '../../store/utils';
-
 //react functional component
-const ColumnNewRedux = ({ showLoadMore = true, shuffle = false, authorId = null, onSelectNft }) => {
-
+const ColumnNewRedux = ({ showLoadMore = true, shuffle = false, collectionOwned= false, user }) => {
     const dispatch = useDispatch();
     const nftItems = useSelector(selectors.nftItems);
     const nfts = nftItems ? shuffle ? shuffleArray(nftItems) : nftItems : [];
@@ -22,8 +20,17 @@ const ColumnNewRedux = ({ showLoadMore = true, shuffle = false, authorId = null,
     }
 
     useEffect(() => {
-        dispatch(actions.fetchNftsBreakdown(authorId));
-    }, [dispatch, authorId]);
+        async function fetchData(){
+            if(!collectionOwned){
+                await dispatch(actions.fetchNftsBreakdown(user));
+                console.log(nfts)
+            } else {
+                await dispatch(actions.fetchNftOwned(user));
+                console.log(nfts)
+            }
+        }
+        fetchData();
+    }, [dispatch, collectionOwned,user]);
 
     //will run when component unmounted
     useEffect(() => {
@@ -34,15 +41,20 @@ const ColumnNewRedux = ({ showLoadMore = true, shuffle = false, authorId = null,
     },[dispatch]);
 
     const loadMore = () => {
-        dispatch(actions.fetchNftsBreakdown(authorId));
+        if (!collectionOwned){
+            dispatch(actions.fetchNftsBreakdown(user));
+        } else {
+            dispatch(actions.fetchNftOwned(user));
+        }
+
     }
 
     return (
         <div className='row'>
             {nfts && nfts.map( (nft, index) => (
-                <NftMintCard nft={nft} key={index} onImgLoad={onImgLoad} height={height} onSelectNft={onSelectNft} />
+                <NftCard listing={nft} key={index} onImgLoad={onImgLoad} height={height} />
             ))}
-            { showLoadMore && nfts.length <= 20 &&
+            { showLoadMore && nfts.length >= 20 &&
                 <div className='col-lg-12'>
                     <div className="spacer-single"></div>
                     <span onClick={loadMore} className="btn-main lead m-auto">Load More</span>

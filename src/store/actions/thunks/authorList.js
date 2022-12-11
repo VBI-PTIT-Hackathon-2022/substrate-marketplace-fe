@@ -8,7 +8,7 @@ export const fetchAuthorList = (authorId) => async (dispatch) => {
 
   try {
     let filter = authorId ? 'id='+authorId : '';
-    const { data } = await Axios.get(`${api.baseUrl}${api.authors}?${filter}`, {
+    const { data } = await Axios.get('/users/'+filter, {
       cancelToken: Canceler.token,
       params: {}
     });
@@ -36,10 +36,21 @@ export const fetchAuthorRanking = () => async (dispatch) => {
 };
 
 export const fetchUserDetail = async (username,walletAddress) => {
+  if(username){
+    const response = await Axios({
+      method: 'POST', url: '/users/' + walletAddress, data: {
+        name:username,
+      }
+    })
+    const data = response;
+    return data;
+  }
+  }
+
+
+export const getUserDetail = async (walletAddress) => {
   const response = await Axios({
-    method: 'POST', url: '/users/' + walletAddress, data: {
-      name:username,
-    }
+    method: 'GET', url: '/users/' + walletAddress,
   })
   const data = response.data;
   return data;

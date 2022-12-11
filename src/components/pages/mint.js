@@ -1,11 +1,10 @@
 import React, {useCallback, useState} from "react";
 import {createGlobalStyle} from 'styled-components';
-import ColumnNewMint from '../components/ColumnNewMint';
-import api from "../../core/api";
 import Footer from '../components/footer';
 import {TxButton} from "../../substrate-lib/components";
 import {useSubstrateState} from "../../substrate-lib";
 import {metadata} from "../../core/nft/interact";
+import Clock from "../components/Clock";
 
 const GlobalStyles = createGlobalStyle`
   header#myHeader.navbar.sticky.white {
@@ -66,15 +65,7 @@ export default function Minter(props) {
     const [description, setDescription] = useState("");
     const [url, setURL] = useState("");
     const [tokenURI, setTokenURI] = useState("");
-    const [manualInput, setManualInput] = useState(false);
     const {currentAccount} = useSubstrateState()
-
-    const toggleInput = () => {
-        setManualInput(!manualInput)
-        setName("");
-        setDescription("");
-        setURL("");
-    };
 
     const onMintPressed = async () => {
         const {uri} = await metadata(url, name, description);
@@ -83,11 +74,11 @@ export default function Minter(props) {
     }
 
 
-    const onSelectNft = (nft) => {
-        setName(nft.title);
-        setDescription(nft.description);
-        setURL(api.baseUrl + nft.preview_image.url);
-    }
+    // const onSelectNft = (nft) => {
+    //     setName(nft.title);
+    //     setDescription(nft.description);
+    //     setURL(api.baseUrl + nft.preview_image.url);
+    // }
 
     const isEmpty = useCallback(() => {
         return url.trim() === '' || name.trim() === '' || description.trim() === '';
@@ -112,20 +103,12 @@ export default function Minter(props) {
                 <div className="Minter">
                     <h1>Mint your NFT</h1>
                     <br/><br/>
-
-                    <div>
-                        {
-                            currentAccount.addressRaw != null &&
-                            <>
-                                <button id="toggleButton" className="btn-main" onClick={() => toggleInput()}>
-                                    Switch to {manualInput ? 'select' : 'manual'} input
-                                </button>
-                                <br/>
-                                <br/>
-                                {!manualInput ? (
-                                    <ColumnNewMint onSelectNft={onSelectNft} showLoadMore={false} authorId="1"/>
-                                ) : (
-                                    <form>
+                    {
+                        currentAccount && currentAccount.addressRaw != null &&
+                        <div className={"row"}>
+                            <div className="col-lg-7 offset-lg-1 mb-5">
+                                <form id="form-create-item" className="form-border" action="#">
+                                    <div className="field-set">
                                         <h2>Link to image asset: </h2>
                                         <input
                                             className="form-control"
@@ -147,8 +130,8 @@ export default function Minter(props) {
                                             placeholder="e.g. My Cool NFT!"
                                             onChange={(event) => setDescription(event.target.value)}
                                         />
-                                    </form>
-                                )}
+                                    </div>
+                                </form>
                                 {!isEmpty() &&
                                     <>
                                         <span>NFT Name: {name}</span>
@@ -184,9 +167,37 @@ export default function Minter(props) {
                                 <p id="status">
                                     {status}
                                 </p>
-                            </>
-                        }
-                    </div>
+                            </div>
+                            <div className="col-lg-3 col-sm-6 col-xs-12">
+                                <h5>Preview item</h5>
+                                <div className="nft__item m-0">
+                                    <div className="de_countdown">
+                                        <Clock deadline="December, 22, 2023" />
+                                    </div>
+                                    <div className="author_list_pp">
+                          <span>
+                              <img className="lazy" src="./img/author/author-2.jpg" alt=""/>
+                              <i className="fa fa-check"></i>
+                          </span>
+                                    </div>
+                                    <div className="nft__item_wrap">
+                          <span>
+                              <img src={url} id="get_file_2" className="lazy nft__item_preview" alt=""/>
+                          </span>
+                                    </div>
+                                    <div className="nft__item_info">
+                          <span >
+                              <h4>{name}</h4>
+                          </span>
+                                        <div className="nft__item_like">
+                                            <i className="fa fa-heart"></i><span>50</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
                 </div>
             </section>
             <Footer/>

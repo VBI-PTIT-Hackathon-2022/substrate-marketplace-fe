@@ -17,6 +17,7 @@ const states = (state = defaultState, action) => {
             //append existing data with new data
             // eslint-disable-next-line no-case-declarations
             let payload = state.nftBreakdown.data ? [...state.nftBreakdown.data, ...action.payload] : action.payload;
+            console.log(entityLoadingSucceeded(state.nftBreakdown, payload))
             return { ...state, nftBreakdown: entityLoadingSucceeded(state.nftBreakdown, payload) };
         case getType(actions.getNftBreakdown.failure):
             return { ...state, nftBreakdown: entityLoadingFailed(state.nftBreakdown) };

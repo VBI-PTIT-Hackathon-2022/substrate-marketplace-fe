@@ -1,8 +1,7 @@
 import {Axios, Canceler} from '../../../core/axios';
 import * as actions from '../../actions';
-import api from '../../../core/api';
 
-export const fetchNftsBreakdown = (authorId, isMusic = false) => async (dispatch, getState) => {
+export const fetchNftsBreakdown = (user) => async (dispatch, getState) => {
 
     //access the state
     const state = getState();
@@ -11,32 +10,38 @@ export const fetchNftsBreakdown = (authorId, isMusic = false) => async (dispatch
     dispatch(actions.getNftBreakdown.request(Canceler.cancel));
 
     try {
-        let filter = authorId ? 'author=' + authorId : '';
-        let music = isMusic ? 'category=music' : '';
-
-        const {data} = await Axios.get(`'/nfts_music.json' : api.nfts}?${filter}&${music}`, {
-            cancelToken: Canceler.token,
-            params: {}
-        });
-
-        dispatch(actions.getNftBreakdown.success(data));
+        if(user){
+            const {data} = await Axios.get(`/listings/`+ user.walletAddress, {
+                cancelToken: Canceler.token,
+            });
+            console.log(data)
+            dispatch(actions.getNftBreakdown.success(data));
+        } else {
+            const {data} = await Axios.get(`/listings`, {
+                cancelToken: Canceler.token,
+            });
+            console.log(data)
+            dispatch(actions.getNftBreakdown.success(data));
+        }
     } catch (err) {
         dispatch(actions.getNftBreakdown.failure(err));
     }
 };
 
-export const fetchNftShowcase = () => async (dispatch) => {
+export const fetchNftOwned = (user) => async (dispatch,getState) => {
 
-    dispatch(actions.getNftShowcase.request(Canceler.cancel));
+    const state = getState();
+    console.log(state);
+    dispatch(actions.getNftBreakdown.request(Canceler.cancel));
 
     try {
-        const {data} = await Axios.get(`${api.baseUrl}${api.nftShowcases}`, {
+        const {data} = await Axios.get("/nfts/owned/"+user.walletAddress, {
             cancelToken: Canceler.token,
             params: {}
         });
-        dispatch(actions.getNftShowcase.success(data));
+        dispatch(actions.getNftBreakdown.success(data));
     } catch (err) {
-        dispatch(actions.getNftShowcase.failure(err));
+        dispatch(actions.getNftBreakdown.failure(err));
     }
 };
 
@@ -47,10 +52,20 @@ export const fetchNftDetail = (nftId) => async (dispatch) => {
         const response = await Axios({
             method: 'get', url: '/nfts/' + nftId
         })
-        console.log(response)
+
         dispatch(actions.getNftDetail.success(response.data));
     } catch (err) {
         dispatch(actions.getNftDetail.failure(err));
     }
 };
+
+export const getUserRentedNFT = async (walletAddress) => {
+    const response = await Axios({
+        method: 'GET', url: '/users/rent/' + walletAddress,
+    })
+    const data = response.data;
+    return data;
+
+}
+
 

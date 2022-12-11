@@ -14,6 +14,7 @@ const acctAddr = acct => (acct ? acct.address : '')
 
 const NavLink = (props) => {
     let resolved = useResolvedPath(props.to);
+
     let match = useMatch({path: resolved.pathname, end: true});
 
     return (
@@ -37,15 +38,18 @@ function Main(props) {
     const initialAddress = keyringOptions.length > 0 ? keyringOptions[0].value : ''
 
     // Set the initial address
-    useEffect(async () => {
+    useEffect(() => {
+        async function fetchData(){
+            await fetchUserDetail(currentAccount.meta.name.toUpperCase(), currentAccount.address);
+        }
         // `setCurrentAccount()` is called only when currentAccount is null (uninitialized)
         !currentAccount && initialAddress.length > 0 && setCurrentAccount(keyring.getPair(initialAddress))
-        console.log(currentAccount.meta.name.toUpperCase(), currentAccount.address);
-        await fetchUserDetail(currentAccount.meta.name.toUpperCase(), currentAccount.address);
-    }, [currentAccount, setCurrentAccount, keyring, initialAddress])
+        if(currentAccount){
+            fetchData()
+        }
+    }, [currentAccount, keyring, initialAddress])
 
     const onChange = addr => {
-
         setCurrentAccount(keyring.getPair(addr))
     }
     useEffect(() => {
@@ -84,14 +88,21 @@ function Main(props) {
                            type="text"/>
                 </div>
                 <div className="navbar-item">
-                    <NavLink to="/explorer">
-                        Explorer
+                    <NavLink to={"/explore"} >
+                        Explore
                     </NavLink>
                 </div>
                 <div className="navbar-item">
-                    <NavLink to="/collection">
-                        Collection
-                    </NavLink>
+                    {currentAccount?
+                        <>
+                            <NavLink to={"/collection/"+currentAccount.address}>
+                                Collection
+                            </NavLink>
+                        </>
+                        :
+                        <></>
+                    }
+
                 </div>
                 <div className="navbar-item">
                     <NavLink to="/mint">
