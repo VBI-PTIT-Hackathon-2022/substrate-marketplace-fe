@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Clock from "./Clock";
 import {useNavigate} from 'react-router-dom';
 import {getNFT} from "../../store/actions/thunks";
+import {useSubstrateState} from "../../substrate-lib";
 
 const Outer = styled.div`
   display: flex;
@@ -19,10 +20,11 @@ const NftCard = ({
                      className = 'd-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-4',
                      clockTop = true,
                      height,
-                     onImgLoad,index
+                     onImgLoad
                  }) => {
     const navigate = useNavigate();
     const [nft,setNft] = useState(null);
+    const {currentAccount} = useSubstrateState();
     // const dispatch = useDispatch();
     // const nftDetailState = useSelector(selectors.nftDetailState);
     // const nft = nftDetailState.data ? nftDetailState.data : [];
@@ -64,7 +66,6 @@ const NftCard = ({
                         {
                             isLoading && nft &&
                             <span>
-                                {console.log("testing ",index, nft.image)}
                         <img onLoad={onImgLoad} src={nft.image} className="lazy nft__item_preview" alt=""/>
                     </span>
 
@@ -80,7 +81,7 @@ const NftCard = ({
                     {
                         isLoading && nft &&
                         <span onClick={() => navigateTo("/itemDetail/" + nft.tokenId)}>
-                        <h4>{index} {nft.name}</h4>
+                        <h4>{nft.name}</h4>
                     </span>
                     }
                     <div className="nft__item_price">
@@ -99,7 +100,9 @@ const NftCard = ({
                         {listing && nft && nft.status !=="isRenting" ?
                             <>
                                 <span
-                                    onClick={() => navigateTo("/itemDetail/" + nft.tokenId)}>{nft.status === 'forRent'  ? 'Rent now' : 'Buy Now'}</span>
+                                    onClick={() => navigateTo("/itemDetail/" + nft.tokenId)}>{
+                                    nft.status === 'forRent' && nft.walletAddress === currentAccount.address ? 'Listed' :  nft.status === 'forRent' && nft.walletAddress !== currentAccount.address ? 'Rent Now' : "Buy now"
+                                }</span>
                             </>
                             :
                             <>

@@ -50,7 +50,7 @@ const ColumnNewRedux = ({ showLoadMore = true, shuffle = true, collectionOwned= 
     return (
         <div className='row'>
             {nfts && nfts.map( (nft, index) => {
-                return (<NftCard listing={nft} key={index} index={index} onImgLoad={onImgLoad} height={height}/>)
+                return (<NftCard listing={nft} key={index} onImgLoad={onImgLoad} height={height}/>)
             })}
             { showLoadMore && nfts.length >= 20 &&
                 <div className='col-lg-12'>

@@ -73,10 +73,9 @@ function TxButton({
         status.isFinalized
             ? setStatus(`😉 Finalized. Block hash: ${status.asFinalized.toString()}`)
             : setStatus(`Current transaction status: ${status.type}`)
-        console.log(extrinsic)
+
         const data = await fetchUserDetail(currentAccount.meta.name.toUpperCase(), currentAccount.address);
         if (status.isFinalized) {
-            console.log(data.data.nfts[data.data.nfts.length-1].tokenId)
             const path = "/itemDetail/"+data.data.nfts[data.data.nfts.length-1].tokenId;
             navigate(path);
         }
@@ -137,7 +136,6 @@ function TxButton({
         const fromAcct = await getFromAcct()
         const transformed = transformParams(paramFields, inputParams)
         // transformed can be empty parameters
-        console.log(inputParams)
         const txExecute = transformed
             ? api.tx[palletRpc][callable](...transformed)
             : api.tx[palletRpc][callable]()
@@ -159,7 +157,6 @@ function TxButton({
                 .catch(txErrHandler)
         }
 
-        console.log(callable)
         setExtrinsic(callable)
         setUnsub(() => unsub)
     }

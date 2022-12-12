@@ -14,13 +14,11 @@ export const fetchNftsBreakdown = (user) => async (dispatch, getState) => {
             const {data} = await Axios.get(`/listings/`+ user.walletAddress, {
                 cancelToken: Canceler.token,
             });
-            console.log(data)
             dispatch(actions.getNftBreakdown.success(data));
         } else {
             const {data} = await Axios.get(`/listings`, {
                 cancelToken: Canceler.token,
             });
-            console.log(data)
             dispatch(actions.getNftBreakdown.success(data));
         }
     } catch (err) {

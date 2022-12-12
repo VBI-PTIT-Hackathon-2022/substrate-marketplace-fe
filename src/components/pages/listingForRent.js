@@ -158,7 +158,7 @@ class Listing extends Component {
 
                                     <input type="button" id="submit" className="btn-main" onClick={async () => {
                                         const response = await saveListingNFT(this.state.currentAccount, this.state);
-                                        console.log(response);
+
                                         if (response.statusText === "Created") {
                                             const path = "/itemDetail/" + this.state.nftDetail.tokenId;
                                             this.state.navigate(path);
