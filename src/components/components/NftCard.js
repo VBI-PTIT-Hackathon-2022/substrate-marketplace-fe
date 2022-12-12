@@ -3,7 +3,6 @@ import styled from "styled-components";
 import Clock from "./Clock";
 import {useNavigate} from 'react-router-dom';
 import {getNFT} from "../../store/actions/thunks";
-import {useSubstrateState} from "../../substrate-lib";
 
 const Outer = styled.div`
   display: flex;
@@ -24,7 +23,6 @@ const NftCard = ({
                  }) => {
     const navigate = useNavigate();
     const [nft,setNft] = useState(null);
-    const {currentAccount} = useSubstrateState();
     // const dispatch = useDispatch();
     // const nftDetailState = useSelector(selectors.nftDetailState);
     // const nft = nftDetailState.data ? nftDetailState.data : [];
@@ -85,7 +83,7 @@ const NftCard = ({
                     </span>
                     }
                     <div className="nft__item_price">
-                        {listing.length !== 0?
+                        {nft&& nft.status === "forRent"?
                             <>
                                 {listing.fee} UNIT
                             </>
@@ -100,9 +98,9 @@ const NftCard = ({
                         {listing && nft && nft.status !=="isRenting" ?
                             <>
                                 <span
-                                    onClick={() => navigateTo("/itemDetail/" + nft.tokenId)}>{
-                                    nft.status === 'forRent' && nft.walletAddress === currentAccount.address ? 'Listed' :  nft.status === 'forRent' && nft.walletAddress !== currentAccount.address ? 'Rent Now' : "Buy now"
-                                }</span>
+                                    onClick={() => navigateTo("/itemDetail/" + nft.tokenId)}>
+                                    Detail
+                                </span>
                             </>
                             :
                             <>
