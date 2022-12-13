@@ -135,6 +135,7 @@ function TxButton({
         const fromAcct = await getFromAcct()
         const transformed = transformParams(paramFields, inputParams)
         // transformed can be empty parameters
+        console.log(transformed)
         const txExecute = transformed
             ? api.tx[palletRpc][callable](...transformed)
             : api.tx[palletRpc][callable]()

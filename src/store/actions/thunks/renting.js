@@ -148,6 +148,6 @@ export async function getMessageRenting (orderRight){
         paid_type: orderRight.paid_type
     })
     const message = u8aToHex(stringToU8a(orderRental));
-
+    console.log(orderRental, message)
     return message;
 }

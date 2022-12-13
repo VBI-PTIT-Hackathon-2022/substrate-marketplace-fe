@@ -92,6 +92,7 @@ export default function ItemDetailRedux(props) {
     const [accountBalance, setAccountBalance] = useState(0);
     const [feePaid, setFeePaid] = useState(0);
     const [type, setPaidType] = useState(0);
+    const [dueDate, setDueDate] = useState('2022-1-1')
     const [status, setStatus] = useState('')
     const [orderRight, setOrderRight] = useState(null);
 
@@ -143,7 +144,7 @@ export default function ItemDetailRedux(props) {
             borrowerAddress: currentAccount.address,
             fee: listingDetail.fee,
             tokenId: listingDetail.tokenId,
-            due_date: '2022-12-12',
+            due_date: dueDate,
             paid_type: type,
         };
         if (isDate) {
@@ -153,6 +154,7 @@ export default function ItemDetailRedux(props) {
             const days = ((due_date - now) / 1000) / 86400;
             if (parseInt(days) < 1) return;
             setFeePaid(parseInt(days) * listingDetail.fee);
+            setDueDate(evt.target.value);
             order.due_date = evt.target.value;
         } else {
             order.paid_type = parseInt(evt.target.value);
@@ -448,7 +450,19 @@ export default function ItemDetailRedux(props) {
                     <div className='heading'>
                         <p>You will pay</p>
                         <div className='subtotal'>
-                            {feePaid} UNIT
+                            {type === 0 ?
+                                <>
+                                    {feePaid} UNIT
+                                </> : type === 1 ?
+                                    <>
+                                        {Number(listingDetail.fee).toFixed(5)} UNIT / day
+                                    </> : type === 2 ?
+                                        <>
+                                            {Number(listingDetail.fee).toFixed(5) * 7 } UNIT / week
+                                        </>:
+                                        <></>
+                            }
+
                         </div>
                     </div>
                     <TxButton id="mintButton" className="btn-main lead mb-5" label="Rent now"
