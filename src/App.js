@@ -21,6 +21,7 @@ import ItemDetailRedux from "./components/pages/item";
 import ListingForRent from "./components/pages/listingForRent";
 import Collection from "./components/pages/collection";
 import Explore from "./components/pages/explore";
+import Events from "./Events";
 const GlobalStyles = createGlobalStyle`
   :root {
     scroll-behavior: unset;
@@ -69,7 +70,7 @@ function Main() {
           <Header />
         </Sticky>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home />} />collection
           <Route path={"/listingForRent/:nftId"}  element={<ListingForRent />} />
           <Route path={"/mint"} element={<Mint />} />
           <Route path={"/itemDetail/:nftId"} element={<ItemDetailRedux />} />
@@ -79,6 +80,7 @@ function Main() {
         <ScrollToTop />
       </div>
       <DeveloperConsole />
+      <Events />
     </div>
   )
 }

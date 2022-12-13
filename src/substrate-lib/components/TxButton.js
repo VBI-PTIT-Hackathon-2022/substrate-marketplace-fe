@@ -21,7 +21,6 @@ function TxButton({
     const {api, currentAccount} = useSubstrateState()
     const [unsub, setUnsub] = useState(null)
     const [sudoKey, setSudoKey] = useState(null)
-    const [extrinsic, setExtrinsic] = useState(null)
     const {palletRpc, callable, inputParams, paramFields} = attrs
     const [isActive, setActive] = useState("active");
     const navigate = useNavigate();
@@ -157,7 +156,6 @@ function TxButton({
                 .catch(txErrHandler)
         }
 
-        setExtrinsic(callable)
         setUnsub(() => unsub)
     }
 

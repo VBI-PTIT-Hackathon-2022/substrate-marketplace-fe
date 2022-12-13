@@ -145,7 +145,7 @@ export async function getMessageRenting (orderRight){
         fee: fee,
         token: orderRight.tokenId,
         due_date: due_date,
-        paid_type: 1
+        paid_type: orderRight.paid_type
     })
     const message = u8aToHex(stringToU8a(orderRental));
 

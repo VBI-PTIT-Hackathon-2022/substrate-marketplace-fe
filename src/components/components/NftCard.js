@@ -83,7 +83,7 @@ const NftCard = ({
                     </span>
                     }
                     <div className="nft__item_price">
-                        {nft&& nft.status === "forRent"?
+                        {nft&& (nft.status === "forRent" || nft.status==="isRenting") ?
                             <>
                                 {listing.fee} UNIT
                             </>
