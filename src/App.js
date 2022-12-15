@@ -21,7 +21,6 @@ import ItemDetailRedux from "./components/pages/item";
 import ListingForRent from "./components/pages/listingForRent";
 import Collection from "./components/pages/collection";
 import Explore from "./components/pages/explore";
-import Events from "./Events";
 const GlobalStyles = createGlobalStyle`
   :root {
     scroll-behavior: unset;
