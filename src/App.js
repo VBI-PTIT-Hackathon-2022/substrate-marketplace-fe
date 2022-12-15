@@ -80,7 +80,6 @@ function Main() {
         <ScrollToTop />
       </div>
       <DeveloperConsole />
-      <Events />
     </div>
   )
 }
