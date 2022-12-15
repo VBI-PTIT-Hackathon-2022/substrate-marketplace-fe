@@ -69,7 +69,7 @@ function Main() {
           <Header />
         </Sticky>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home />} />collection
           <Route path={"/listingForRent/:nftId"}  element={<ListingForRent />} />
           <Route path={"/mint"} element={<Mint />} />
           <Route path={"/itemDetail/:nftId"} element={<ItemDetailRedux />} />

@@ -23,10 +23,8 @@ const ColumnNewRedux = ({ showLoadMore = true, shuffle = false, collectionOwned=
         async function fetchData(){
             if(!collectionOwned){
                 await dispatch(actions.fetchNftsBreakdown(user));
-                console.log(nfts)
             } else {
                 await dispatch(actions.fetchNftOwned(user));
-                console.log(nfts)
             }
         }
         fetchData();
@@ -51,9 +49,9 @@ const ColumnNewRedux = ({ showLoadMore = true, shuffle = false, collectionOwned=
 
     return (
         <div className='row'>
-            {nfts && nfts.map( (nft, index) => (
-                <NftCard listing={nft} key={index} onImgLoad={onImgLoad} height={height} />
-            ))}
+            {nfts && nfts.map( (nft, index) => {
+                return (<NftCard listing={nft} key={index} onImgLoad={onImgLoad} height={height}/>)
+            })}
             { showLoadMore && nfts.length >= 20 &&
                 <div className='col-lg-12'>
                     <div className="spacer-single"></div>

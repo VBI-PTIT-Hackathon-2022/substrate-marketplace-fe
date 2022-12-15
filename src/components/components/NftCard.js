@@ -1,10 +1,8 @@
-import React, {memo, useEffect} from 'react';
+import React, {memo, useEffect, useState} from 'react';
 import styled from "styled-components";
 import Clock from "./Clock";
 import {useNavigate} from 'react-router-dom';
-import {fetchNftDetail} from "../../store/actions/thunks";
-import {useDispatch, useSelector} from "react-redux";
-import * as selectors from "../../store/selectors";
+import {getNFT, getUserDetail} from "../../store/actions/thunks";
 
 const Outer = styled.div`
   display: flex;
@@ -24,9 +22,11 @@ const NftCard = ({
                      onImgLoad
                  }) => {
     const navigate = useNavigate();
-    const dispatch = useDispatch();
-    const nftDetailState = useSelector(selectors.nftDetailState);
-    const nft = nftDetailState.data ? nftDetailState.data : [];
+    const [nft,setNft] = useState(null);
+    const [ownerName,setOwnerName] = useState(null);
+    // const dispatch = useDispatch();
+    // const nftDetailState = useSelector(selectors.nftDetailState);
+    // const nft = nftDetailState.data ? nftDetailState.data : [];
     const navigateTo = (link) => {
         navigate(link);
     }
@@ -34,12 +34,19 @@ const NftCard = ({
 
     useEffect(() => {
         async function fetchData() {
-            await dispatch(fetchNftDetail(listing.tokenId));
-        }
+            const nftDetail = await getNFT(listing.tokenId);
+            setNft(nftDetail)
+            if (listing.lender){
+                const owner = await getUserDetail(listing.lender);
+                setOwnerName(owner.name);
+            } else {
+                const owner = await getUserDetail(listing.walletAddress);
+                setOwnerName(owner.name);
+            }
 
-        console.log(listing)
-        fetchData();
-    }, [dispatch, listing]);
+        }
+        fetchData()
+    }, [listing]);
 
     return (
         <div className={className}>
@@ -54,7 +61,7 @@ const NftCard = ({
                 }
                 <div className="author_list_pp">
                     {
-                        isLoading &&
+                        nft &&isLoading &&
                         <span onClick={() => navigateTo("/collection/" + nft.walletAddress)}>
                         <img className="lazy" src={process.env.PUBLIC_URL + "/img/author/author-2.jpg"} alt=""/>
                         <i className="fa fa-check"></i>
@@ -64,7 +71,7 @@ const NftCard = ({
                 <div className="nft__item_wrap" style={{height: `${height}px`}}>
                     <Outer>
                         {
-                            isLoading && nft&&
+                            isLoading && nft &&
                             <span>
                         <img onLoad={onImgLoad} src={nft.image} className="lazy nft__item_preview" alt=""/>
                     </span>
@@ -79,21 +86,31 @@ const NftCard = ({
                 }
                 <div className="nft__item_info">
                     {
-                        isLoading &&
+                        isLoading && nft &&
                         <span onClick={() => navigateTo("/itemDetail/" + nft.tokenId)}>
-                        <h4>{nft.name}</h4>
+                            <h4>{nft.name}</h4>
+                            <h4>{ownerName}</h4>
                     </span>
                     }
                     <div className="nft__item_price">
-                        {listing.fee} UNIT
+                        {nft&& (nft.status === "forRent" || nft.status==="isRenting") ?
+                            <>
+                                {listing.fee} UNIT
+                            </>
+                            :
+                            <>
+                            </>
+                        }
                     </div>
 
 
                     <div className="nft__item_action">
-                        {listing && nft.status !="isRenting" ?
+                        {listing && nft && nft.status !=="isRenting" ?
                             <>
                                 <span
-                                    onClick={() => navigateTo("/itemDetail/" + nft.tokenId)}>{nft.status === 'forRent'  ? 'Rent now' : 'Buy Now'}</span>
+                                    onClick={() => navigateTo("/itemDetail/" + nft.tokenId)}>
+                                    Detail
+                                </span>
                             </>
                             :
                             <>
