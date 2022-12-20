@@ -147,7 +147,7 @@ export default function Minter(props) {
                                                           type="SIGNED-TX"
                                                           setStatus={setStatus}
                                                           attrs={{
-                                                              palletRpc: 'nftCurrency',
+                                                              palletRpc: 'collectible',
                                                               callable: 'mintTo',
                                                               inputParams: ["0x"+Buffer.from(currentAccount.addressRaw).toString('hex'), tokenURI],
                                                               paramFields: [true,true],
