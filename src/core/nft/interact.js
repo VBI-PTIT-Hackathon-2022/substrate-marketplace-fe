@@ -17,7 +17,6 @@ export const metadata = async (url, name, description) => {
 
 
     const pinataResponse = await pinJSONToIPFS(metadata);
-    console.log(pinataResponse.pinataUrl)
     const tokenURI = pinataResponse.pinataUrl;
     try {
         return {

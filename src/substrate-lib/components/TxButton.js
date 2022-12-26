@@ -21,7 +21,6 @@ function TxButton({
     const {api, currentAccount} = useSubstrateState()
     const [unsub, setUnsub] = useState(null)
     const [sudoKey, setSudoKey] = useState(null)
-    const [extrinsic, setExtrinsic] = useState(null)
     const {palletRpc, callable, inputParams, paramFields} = attrs
     const [isActive, setActive] = useState("active");
     const navigate = useNavigate();
@@ -73,10 +72,9 @@ function TxButton({
         status.isFinalized
             ? setStatus(`😉 Finalized. Block hash: ${status.asFinalized.toString()}`)
             : setStatus(`Current transaction status: ${status.type}`)
-        console.log(extrinsic)
+
         const data = await fetchUserDetail(currentAccount.meta.name.toUpperCase(), currentAccount.address);
         if (status.isFinalized) {
-            console.log(data.data.nfts[data.data.nfts.length-1].tokenId)
             const path = "/itemDetail/"+data.data.nfts[data.data.nfts.length-1].tokenId;
             navigate(path);
         }
@@ -87,7 +85,7 @@ function TxButton({
             ? setStatus(`😉 Finalized. Block hash: ${status.asFinalized.toString()}`)
             : setStatus(`Current transaction status: ${status.type}`)
         if (status.isFinalized) {
-            navigate(-1);
+            navigate(0);
         }
     }
 
@@ -137,7 +135,7 @@ function TxButton({
         const fromAcct = await getFromAcct()
         const transformed = transformParams(paramFields, inputParams)
         // transformed can be empty parameters
-        console.log(inputParams)
+        console.log(transformed)
         const txExecute = transformed
             ? api.tx[palletRpc][callable](...transformed)
             : api.tx[palletRpc][callable]()
@@ -159,8 +157,6 @@ function TxButton({
                 .catch(txErrHandler)
         }
 
-        console.log(callable)
-        setExtrinsic(callable)
         setUnsub(() => unsub)
     }
 

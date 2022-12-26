@@ -23,7 +23,6 @@ export const saveListingNFT = async (account,data) => {
     });
     const due_date = new Date(data.due_date).getTime()/1000;
     const fee = Number(data.fee)*(10**12);
-    console.log(fee)
     const listing = order.createType('Order', {
         lender: data.nftDetail.walletAddress,
         fee: fee,
@@ -31,9 +30,7 @@ export const saveListingNFT = async (account,data) => {
         due_date: due_date,
         paid_type: 1
     })
-    console.log(listing)
     const message = u8aToHex(stringToU8a(listing));
-    console.log("message left: ",message)
 
     if (account.meta.source){
         const injector = await web3FromSource(account.meta.source);
@@ -111,7 +108,6 @@ export const getListingDetail = async (account,tokenId) => {
                 tokenId: tokenId,
             }
         })
-        console.log(response);
         return response.data[0];
     } catch (err) {
         console.log(err);
@@ -119,13 +115,10 @@ export const getListingDetail = async (account,tokenId) => {
 }
 
 export const cancelListing = async (listing) => {
-    console.log(listing)
     try {
         const response = await Axios({
             method: 'delete', url: '/listings/'+listing.tokenId,
         })
-
-        console.log(response);
         return response;
     } catch (err) {
         console.log(err);
@@ -146,17 +139,15 @@ export async function getMessageRenting (orderRight){
     });
     const due_date = new Date(orderRight.due_date).getTime()/1000;
     const fee = Number(orderRight.fee)*(10**12);
-    console.log(fee)
     const orderRental = order.createType('Order', {
         lender: orderRight.lenderAddress,
         borrower: orderRight.borrowerAddress,
         fee: fee,
         token: orderRight.tokenId,
         due_date: due_date,
-        paid_type: 1
+        paid_type: orderRight.paid_type
     })
-    console.log(orderRental)
     const message = u8aToHex(stringToU8a(orderRental));
-
+    console.log(orderRental, message)
     return message;
 }

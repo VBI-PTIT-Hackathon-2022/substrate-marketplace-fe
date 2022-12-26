@@ -32,6 +32,5 @@ export const nftItems = createSelector( nftBreakdownState, ( nfts ) => {
     if(!data) {
         return [];
     }
-    console.log(data)
     return data;
 });
