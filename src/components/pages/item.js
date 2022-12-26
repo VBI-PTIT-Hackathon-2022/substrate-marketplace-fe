@@ -13,6 +13,7 @@ import {useNavigate, useParams} from "react-router-dom";
 import {useSubstrateState} from "../../substrate-lib";
 import {getListingDetail, getMessageRenting} from "../../store/actions/thunks/renting";
 import {TxButton} from "../../substrate-lib/components";
+import moment from "moment";
 
 const GlobalStyles = createGlobalStyle`
   header#myHeader.navbar.white {
@@ -75,6 +76,7 @@ export default function ItemDetailRedux(props) {
         setOpenMenu1(!openMenu1);
         setOpenMenu(false);
         setOpenMenu0(false);
+
         document.getElementById("Mainbtn1").classList.add("active");
         document.getElementById("Mainbtn").classList.remove("active");
         document.getElementById("Mainbtn0").classList.remove("active");
@@ -82,7 +84,9 @@ export default function ItemDetailRedux(props) {
 
     const dispatch = useDispatch();
     const nftDetailState = useSelector(selectors.nftDetailState);
+    const offersDispatch = useSelector(selectors.nftOffer);
     const nft = nftDetailState.data ? nftDetailState.data : [];
+    const offers = offersDispatch.data? offersDispatch.data:[];
     const {keyring} = useSubstrateState();
     const [ownerNFT, setOwnerNFT] = useState(null);
     const [openCheckout, setOpenCheckout] = useState(false);
@@ -95,13 +99,17 @@ export default function ItemDetailRedux(props) {
     const [dueDate, setDueDate] = useState('2022-1-1')
     const [status, setStatus] = useState('')
     const [orderRight, setOrderRight] = useState(null);
+    //const [offers, setOffers] = useState([]);
 
-    async function getName(owner, custodian) {
-        const ownerData = await getUserDetail(owner);
-        setOwnerNFT(ownerData.name);
-        const custodianData = await getUserDetail(custodian);
-        setCustodian(custodianData.name);
+    async function getName(walletAddress) {
+        return await getUserDetail(walletAddress);
     }
+
+    // async function getOffers(tokenId){
+    //     const offerData = await getOfferNFT(tokenId);
+    //     console.log(offerData)
+    //     setOffers(offerData);
+    // }
 
     useEffect(() => {
         let unsubscribe
@@ -120,11 +128,9 @@ export default function ItemDetailRedux(props) {
 
     async function getDetailRenting(account, tokenId) {
         const data = await getListingDetail(account, tokenId);
-        console.log(data);
         if (data) {
             setListingDetail(data);
         }
-
     }
 
     useEffect(() => {
@@ -133,7 +139,8 @@ export default function ItemDetailRedux(props) {
         }
 
         fetchData();
-        getName(nft.walletAddress, nft.custodian);
+        setOwnerNFT(getName(nft.walletAddress));
+        setCustodian(getName(nft.custodian));
         getDetailRenting(nft.walletAddress, nftId);
     }, [dispatch, nftId, nft.walletAddress, nft.custodian]);
 
@@ -274,24 +281,24 @@ export default function ItemDetailRedux(props) {
                                         </div>
                                     </div>)}
 
-                                    {/*{openMenu  && (*/}
-                                    {/*    <div className="tab-1 onStep fadeIn">*/}
-                                    {/*        {nft.bids && nft.bids.map((bid, index) => (*/}
-                                    {/*            <div className="p_list" key={index}>*/}
-                                    {/*                <div className="p_list_pp">*/}
-                                    {/*            <span>*/}
-                                    {/*                <img className="lazy" src={api.baseUrl + bid.author.avatar.url} alt=""/>*/}
-                                    {/*                <i className="fa fa-check"></i>*/}
-                                    {/*            </span>*/}
-                                    {/*                </div>*/}
-                                    {/*                <div className="p_list_info">*/}
-                                    {/*                    Bid {bid.author.id === nft.author.id && 'accepted'} <b>{bid.value} ETH</b>*/}
-                                    {/*                    <span>by <b>{bid.author.username}</b> at {moment(bid.created_at).format('L, LT')}</span>*/}
-                                    {/*                </div>*/}
-                                    {/*            </div>*/}
-                                    {/*        ))}*/}
-                                    {/*    </div>*/}
-                                    {/*)}*/}
+                                    {openMenu  && (
+                                        <div className="tab-1 onStep fadeIn">
+                                            {offers && offers.map((offer, index) => (
+                                                <div className="p_list" key={index}>
+                                                    <div className="p_list_pp">
+                                                <span>
+                                                    <img className="lazy" src={process.env.PUBLIC_URL + "/img/author/author-"+index+".jpg"} alt=""/>
+                                                    <i className="fa fa-check"></i>
+                                                </span>
+                                                    </div>
+                                                    <div className="p_list_info">
+                                                        Offer {offer.maker === nft.walletAddress && 'accepted'} <b>{offer.fee} UNIT</b> ,<b>{offer.due_date}</b>
+                                                        <span>by <b>{getName(offer.maker)}</b> at {moment(offer.createdAt).format('L, LT')}</span>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
 
                                     {/*{openMenu1 && (*/}
                                     {/*    <div className="tab-2 onStep fadeIn">*/}

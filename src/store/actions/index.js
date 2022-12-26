@@ -9,6 +9,12 @@ export const getNftBreakdown = asyncAction(
     'nft/GET_NFT_BREAKDOWN_FAIL'
 )();
 
+export const getNftOffer = asyncAction(
+    'nft/GET_NFT_OFFER',
+    'nft/GET_NFT_OFFER_SUCCESS',
+    'nft/GET_NFT_OFFER_FAIL'
+)();
+
 export const getNftShowcase = asyncAction(
     'nft/GET_NFT_SHOWCASE',
     'nft/GET_NFT_SHOWCASE_SUCCESS',

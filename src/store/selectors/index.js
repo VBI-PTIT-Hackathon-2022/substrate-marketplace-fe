@@ -3,6 +3,7 @@ import { createSelector, createStructuredSelector } from "reselect";
 
 //Store Selectors
 export const nftBreakdownState = (state) => state.NFT.nftBreakdown;
+export const nftOfferState = (state) => state.NFT.nftOffer;
 export const nftShowcaseState = (state) => state.NFT.nftShowcase;
 export const nftDetailState = (state) => state.NFT.nftDetail;
 export const hotCollectionsState = (state) => state.hotCollections.hotCollections;
@@ -29,6 +30,15 @@ export const nftFilter = createStructuredSelector({
 export const nftItems = createSelector( nftBreakdownState, ( nfts ) => {
     let { data } = nfts;
     
+    if(!data) {
+        return [];
+    }
+    return data;
+});
+
+export const nftOffer = createSelector( nftOfferState, ( offers ) => {
+    let { data } = offers;
+
     if(!data) {
         return [];
     }

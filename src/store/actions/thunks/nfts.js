@@ -67,12 +67,35 @@ export const getUserRentedNFT = async (walletAddress) => {
 
 }
 
-export const getNFT = async (nftId) => {
+export const getNFT = async (tokenId) => {
     const response = await Axios({
-        method: 'GET', url: '/nfts/' + nftId
+        method: 'GET', url: '/nfts/' + tokenId
     })
     const data = response.data;
     return data;
 }
 
+export const getOfferNFT = async (tokenId) => {
+    const response = await Axios({
+        method: 'GET', url: '/offers/nft/' + tokenId
+    })
+    const data = response.data;
+    console.log(Object.values(data))
+    return data;
+}
 
+export const fetchNftOffer = (tokenId) => async (dispatch,getState) => {
+    const state = getState();
+    console.log(state);
+    dispatch(actions.getNftOffer.request(Canceler.cancel));
+
+    try {
+        const {data} = await Axios.get("/offers/nft/"+tokenId, {
+            cancelToken: Canceler.token,
+            params: {}
+        });
+        dispatch(actions.getNftOffer.success(data));
+    } catch (err) {
+        dispatch(actions.getNftOffer.failure(err));
+    }
+};
