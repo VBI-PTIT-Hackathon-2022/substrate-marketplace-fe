@@ -21,11 +21,11 @@ const states = (state = defaultState, action) => {
             return { ...state, nftBreakdown: entityLoadingSucceeded(state.nftBreakdown, payload) };
         case getType(actions.getNftBreakdown.failure):
             return { ...state, nftBreakdown: entityLoadingFailed(state.nftBreakdown) };
-        case getType(action.getNftOffer.request):
+        case getType(actions.getNftOffer.request):
             return { ...state, nftOffer: entityLoadingStarted(state.nftOffer, action.payload) };
-        case getType(action.getNftOffer.success):
+        case getType(actions.getNftOffer.success):
             return { ...state, nftOffer: entityLoadingSucceeded(state.nftOffer, action.payload) };
-        case getType(action.getNftOffer.failure):
+        case getType(actions.getNftOffer.failure):
             return { ...state, nftOffer: entityLoadingFailed(state.nftOffer) };
         case getType(actions.getNftDetail.request):
             return { ...state, nftDetail: entityLoadingStarted(state.nftDetail, action.payload) };
