@@ -151,3 +151,88 @@ export async function getMessageRenting (orderRight){
     console.log(orderRental, message)
     return message;
 }
+
+export const makeOffer = async (account,data) => {
+    const extensions = await web3Enable('NFT.owl');
+    if (extensions.length === 0) {
+        // no extension installed, or the user did not accept the authorization
+        // in this case we should inform the use and give a link to the extension
+        return;
+    }
+    const order = await ApiPromise.create({
+        types: {
+            Order: {
+                lender: 'AccountId',
+                borrower: 'AccountId',
+                fee: 'u64',
+                token: 'Vec<u8>',
+                due_date: 'u64',
+                paid_type: 'u64'
+            }        }
+    });
+    const due_date = new Date(data.due_date).getTime()/1000;
+    const fee = Number(data.fee)*(10**12);
+    const offer = order.createType('Order', {
+        lender: data.owner,
+        borrower: account.address,
+        fee: fee,
+        token: data.tokenId,
+        due_date: due_date,
+        paid_type: data.paid_type
+    })
+    const message = u8aToHex(stringToU8a(offer));
+
+    if (account.meta.source){
+        const injector = await web3FromSource(account.meta.source);
+
+        const signRaw = injector?.signer?.signRaw;
+
+        if (signRaw) {
+            // after making sure that signRaw is defined
+            // we can use it to sign our message
+            const { signature } = await signRaw({
+                address: account.address,
+                data: message,
+                type: 'bytes'
+            });
+            try {
+                const response = await Axios({
+                    method: 'post', url: '/offers/',
+                    data:{
+                        maker: account.address,
+                        isLender: false,
+                        tokenId: data.tokenId,
+                        fee: data.fee,
+                        due_date: data.due_date,
+                        paid_type: data.paid_type,
+                        message: message,
+                        signature: signature,
+                    }
+                })
+
+                return response;
+            } catch (err) {
+                console.log(err);
+            }
+        }
+    }
+    const signature = u8aToHex(account.sign(message));
+    try {
+        const response = await Axios({
+            method: 'post', url: '/offers/',
+            data:{
+                maker: account.address,
+                isLender: false,
+                tokenId: data.tokenId,
+                fee: data.fee,
+                due_date: data.due_date,
+                paid_type: data.paid_type,
+                message: message,
+                signature: signature,
+            }
+        })
+        return response;
+    } catch (err) {
+        console.log(err);
+    }
+};

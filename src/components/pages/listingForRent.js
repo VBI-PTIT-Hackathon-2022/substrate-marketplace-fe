@@ -122,11 +122,11 @@ class Listing extends Component {
                         <div className="col-lg-7 offset-lg-1 mb-5">
                             <form id="form-create-item" className="form-border" action="#">
                                 <div className="field-set">
-                                    <h5>Title</h5>
-                                    <h4>{this.state.nftDetail.name}</h4>
+                                    <h3>Name</h3>
+                                    <h3>{this.state.nftDetail.name}</h3>
 
-                                    <h5>Token Id</h5>
-                                    <h4>{this.state.nftDetail.tokenId}</h4>
+                                    <h3>Token Id</h3>
+                                    <h3>{this.state.nftDetail.tokenId}</h3>
 
                                     <div className="spacer-10"></div>
 
