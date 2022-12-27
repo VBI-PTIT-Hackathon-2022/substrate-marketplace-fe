@@ -210,6 +210,7 @@ export const makeOffer = async (account,data) => {
                     }
                 })
 
+                console.log(response)
                 return response;
             } catch (err) {
                 console.log(err);
@@ -231,6 +232,7 @@ export const makeOffer = async (account,data) => {
                 signature: signature,
             }
         })
+        console.log(response)
         return response;
     } catch (err) {
         console.log(err);

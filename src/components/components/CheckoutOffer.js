@@ -29,7 +29,6 @@ const CheckoutOffer = ({nft, ownerNFT,listingDetail}) => {
     async function createOffer() {
         if (offer) {
             const response = await makeOffer(currentAccount, offer);
-
             if (response.statusText === "Created") {
                 setOpenCheckoutbid(false)
             }
