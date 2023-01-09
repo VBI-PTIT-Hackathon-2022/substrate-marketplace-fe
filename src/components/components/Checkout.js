@@ -29,7 +29,7 @@ const Checkout = ({nft, ownerNFT,listingDetail,setOpenCheckout}) => {
 
     async function updateInputValue(evt,isDate) {
         let order = {
-            lenderAddress: listingDetail.lender,
+            lenderAddress: listingDetail.maker,
             borrowerAddress: currentAccount.address,
             fee: listingDetail.fee,
             tokenId: listingDetail.tokenId,
@@ -146,7 +146,7 @@ const Checkout = ({nft, ownerNFT,listingDetail,setOpenCheckout}) => {
                           attrs={{
                               palletRpc: 'renting',
                               callable: 'createRental',
-                              inputParams: ["0x" + Buffer.from(keyring.decodeAddress(listingDetail.lender)).toString('hex'), "0x" + Buffer.from(currentAccount.addressRaw).toString('hex'), listingDetail.message, listingDetail.signature, orderRight, "0x0000"],
+                              inputParams: ["0x" + Buffer.from(keyring.decodeAddress(listingDetail.maker)).toString('hex'), "0x" + Buffer.from(currentAccount.addressRaw).toString('hex'), listingDetail.message, listingDetail.signature, orderRight, "0x0000"],
                               paramFields: [true, true, true, true, true, true],
                           }}>
                 </TxButton>

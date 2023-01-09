@@ -13,12 +13,10 @@ export const saveListingNFT = async (account,data) => {
     const order = await ApiPromise.create({
         types: {
             Order: {
-                lender: 'AccountId',
-                borrower: 'AccountId',
-                fee: 'u64',
+                seller: 'AccountId',
+                buyer: 'AccountId',
+                price: 'u64',
                 token: 'Vec<u8>',
-                due_date: 'u64',
-                paid_type: 'u64'
             }        }
     });
     const due_date = new Date(data.due_date).getTime()/1000;

@@ -107,6 +107,7 @@ export default function ItemDetailRedux(props) {
     async function getDetailRenting(account, tokenId) {
         const data = await getListingDetail(account, tokenId);
         if (data) {
+            console.log(data)
             setListingDetail(data);
         }
     }
@@ -298,8 +299,8 @@ export default function ItemDetailRedux(props) {
                                                           attrs={{
                                                               palletRpc: 'renting',
                                                               callable: 'cancelOffer',
-                                                              inputParams: [listingDetail.message, true],
-                                                              paramFields: [true, true],
+                                                              inputParams: [listingDetail.message, true,false],
+                                                              paramFields: [true, true,true],
                                                           }}>
                                                 </TxButton>
 
@@ -308,12 +309,14 @@ export default function ItemDetailRedux(props) {
                                                         onClick={() => {
                                                             const path = '/listingForRent/' + nftId;
                                                             navigate(path, {state: nft});
-                                                        }}>Listing for Rent
+                                                        }}>List for Rent
                                                 </button>
                                             </>}
 
-                                            <button className='btn-main btn2 lead mb-5'
-                                            >List for Sell
+                                            <button className='btn-main btn2 lead mb-5' onClick={() => {
+                                                const path = '/listingForSale/' + nftId;
+                                                navigate(path, {state: nft});
+                                            }} >List for Sale
                                             </button>
                                         </> : <>
                                             {listingDetail && nft.status === "forRent" ? <>
