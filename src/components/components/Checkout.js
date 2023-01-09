@@ -3,8 +3,7 @@ import {TxButton} from "../../substrate-lib/components";
 import {useSubstrateState} from "../../substrate-lib";
 import {getMessageRenting} from "../../store/actions/thunks/renting";
 
-const Checkout = ({nft, ownerNFT,listingDetail}) => {
-    const [openCheckout, setOpenCheckout] = React.useState(true);
+const Checkout = ({nft, ownerNFT,listingDetail,setOpenCheckout}) => {
     const [status, setStatus] = useState('')
     const {api,currentAccount,keyring} = useSubstrateState();
     const [accountBalance, setAccountBalance] = useState(0);
@@ -57,8 +56,6 @@ const Checkout = ({nft, ownerNFT,listingDetail}) => {
     }
 
     return (
-        <div>
-        {openCheckout &&
         <div className='checkout'>
             <div className='maincheckout'>
                 <button className='btn-close' onClick={() => setOpenCheckout(false)}>x</button>
@@ -157,8 +154,6 @@ const Checkout = ({nft, ownerNFT,listingDetail}) => {
                     {status}
                 </p>
             </div>
-        </div>
-        }
         </div>
 
     );

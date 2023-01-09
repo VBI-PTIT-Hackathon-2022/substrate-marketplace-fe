@@ -2,9 +2,9 @@ import React, {memo, useEffect, useState} from "react";
 import {useSubstrateState} from "../../substrate-lib";
 import {makeOffer} from "../../store/actions/thunks/renting";
 
-const CheckoutOffer = ({nft, ownerNFT,listingDetail}) => {
+const CheckoutOffer = ({nft, ownerNFT,listingDetail,setOpenCheckoutbid}) => {
     const {api,currentAccount} = useSubstrateState();
-    const [openCheckoutbid, setOpenCheckoutbid] = useState(true);
+
     const [accountBalance, setAccountBalance] = useState(0);
     const [feePaid, setFeePaid] = useState(0);
     const [fee, setFee] = useState(0);
@@ -76,7 +76,7 @@ const CheckoutOffer = ({nft, ownerNFT,listingDetail}) => {
 
     return (
         <div>
-        {openCheckoutbid && <div className='checkout'>
+         <div className='checkout'>
             <div className='maincheckout'>
                 <button className='btn-close' onClick={() => setOpenCheckoutbid(false)}>x</button>
                 <div className='heading'>

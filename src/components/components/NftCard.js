@@ -2,7 +2,7 @@ import React, {memo, useEffect, useState} from 'react';
 import styled from "styled-components";
 import Clock from "./Clock";
 import {useNavigate} from 'react-router-dom';
-import {getNFT, getUserDetail} from "../../store/actions/thunks";
+import {getNFT} from "../../store/actions/thunks";
 
 const Outer = styled.div`
   display: flex;
@@ -23,7 +23,7 @@ const NftCard = ({
                  }) => {
     const navigate = useNavigate();
     const [nft,setNft] = useState(null);
-    const [ownerName,setOwnerName] = useState(null);
+    //const [ownerName,setOwnerName] = useState(null);
     // const dispatch = useDispatch();
     // const nftDetailState = useSelector(selectors.nftDetailState);
     // const nft = nftDetailState.data ? nftDetailState.data : [];
@@ -36,13 +36,13 @@ const NftCard = ({
         async function fetchData() {
             const nftDetail = await getNFT(listing.tokenId);
             setNft(nftDetail)
-            if (listing.lender){
-                const owner = await getUserDetail(listing.lender);
-                setOwnerName(owner.name);
-            } else {
-                const owner = await getUserDetail(listing.walletAddress);
-                setOwnerName(owner.name);
-            }
+            // if (listing.lender){
+            //     const owner = await getUserDetail(listing.lender);
+            //     setOwnerName(owner.name);
+            // } else {
+            //     const owner = await getUserDetail(listing.walletAddress);
+            //     setOwnerName(owner.name);
+            // }
 
         }
         fetchData()
@@ -89,7 +89,6 @@ const NftCard = ({
                         isLoading && nft &&
                         <span onClick={() => navigateTo("/itemDetail/" + nft.tokenId)}>
                             <h4>{nft.name}</h4>
-                            <h4>{ownerName}</h4>
                     </span>
                     }
                     <div className="nft__item_price">

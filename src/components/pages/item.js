@@ -53,6 +53,7 @@ export default function ItemDetailRedux(props) {
     const [openMenu1, setOpenMenu1] = React.useState(false);
     const [custodian, setCustodian] = React.useState(null);
     const [status, setStatus] = useState('')
+    const {keyring} = useSubstrateState()
     const navigate = useNavigate();
 
     const handleBtnClick0 = () => {
@@ -253,7 +254,7 @@ export default function ItemDetailRedux(props) {
                                                               attrs={{
                                                                   palletRpc: 'renting',
                                                                   callable: 'createRental',
-                                                                  inputParams: ["0x" + Buffer.from(currentAccount.addressRaw).toString('hex'), "0x" + Buffer.from(offer.maker).toString('hex'), offer.message, "0x000", offer.message, offer.signature],
+                                                                  inputParams: ["0x" + Buffer.from(currentAccount.addressRaw).toString('hex'), "0x" + Buffer.from(keyring.decodeAddress(offer.maker)).toString('hex'), offer.message, "0x000", offer.message, offer.signature],
                                                                   paramFields: [true, true, true, true, true, true],
                                                               }}>
                                                     </TxButton>
@@ -345,8 +346,8 @@ export default function ItemDetailRedux(props) {
             </div>
         </section>
         <Footer/>
-        {openCheckout && <Checkout listingDetail={listingDetail} nft={nft} ownerNFT={ownerNFT} />}
-        {openCheckoutbid && <CheckoutOffer listingDetail={listingDetail} nft={nft} ownerNFT={ownerNFT} />}
+        {openCheckout && <Checkout listingDetail={listingDetail} nft={nft} ownerNFT={ownerNFT} setOpenCheckout={setOpenCheckout}/>}
+        {openCheckoutbid && <CheckoutOffer listingDetail={listingDetail} nft={nft} ownerNFT={ownerNFT} setOpenCheckoutbid={setOpenCheckoutbid} />}
 
     </div>);
 }

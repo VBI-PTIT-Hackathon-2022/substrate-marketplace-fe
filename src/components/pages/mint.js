@@ -138,9 +138,9 @@ export default function Minter(props) {
                                         <br/>
                                         <br/>
                                         <div  className="d-flex align-items-start" >
-                                            <button id="mintButton" className="btn-main" onClick={onMintPressed}>
+                                            {tokenURI==="" &&<button className="btn-main" onClick={onMintPressed}>
                                                 Get Metadata
-                                            </button>
+                                            </button>}
                                             &nbsp;&nbsp;&nbsp;&nbsp;
                                             {tokenURI!=="" &&
                                                 <TxButton id="mintButton" className="btn-main" label="Mint NFT"
