@@ -3,7 +3,7 @@ import { ApiPromise } from '@polkadot/api';
 import {stringToU8a, u8aToHex} from '@polkadot/util';
 import {web3Enable, web3FromSource } from '@polkadot/extension-dapp';
 
-export const saveListingNFT = async (account,data) => {
+export const saveListingSaleNFT = async (account,data) => {
     const extensions = await web3Enable('NFT.owl');
     if (extensions.length === 0) {
         // no extension installed, or the user did not accept the authorization
@@ -22,8 +22,8 @@ export const saveListingNFT = async (account,data) => {
     const due_date = new Date(data.due_date).getTime()/1000;
     const fee = Number(data.fee)*(10**12);
     const listing = order.createType('Order', {
-        lender: data.nftDetail.walletAddress,
-        fee: fee,
+        seller: data.nftDetail.walletAddress,
+        price: fee,
         token: data.nftDetail.tokenId,
         due_date: due_date,
         paid_type: 1
@@ -51,20 +51,20 @@ export const saveListingNFT = async (account,data) => {
                         tokenId: data.nftDetail.tokenId,
                         fee: data.fee,
                         due_date: data.due_date,
-                        paid_type:1,
+                        paid_type:0,
                         message: message,
                         signature: signature,
-                        isTrading: false,
+                        isTrading: true,
                     }
                 })
-                await Axios({
-                    method: 'post', url: '/nfts/'+data.nftDetail.tokenId,
-                    data:{
-                        tokenId: data.nftDetail.tokenId,
-                        custodian: data.nftDetail.custodian,
-                        status: 'forRent',
-                    }
-                })
+                // await Axios({
+                //     method: 'post', url: '/nfts/'+data.nftDetail.tokenId,
+                //     data:{
+                //         tokenId: data.nftDetail.tokenId,
+                //         custodian: data.nftDetail.custodian,
+                //         status: 'forSale',
+                //     }
+                // })
                 return response;
             } catch (err) {
                 console.log(err);
@@ -80,33 +80,32 @@ export const saveListingNFT = async (account,data) => {
                 tokenId: data.nftDetail.tokenId,
                 fee: data.fee,
                 due_date: data.due_date,
-                paid_type:1,
                 message: message,
                 signature: signature,
-                isTrading: false,
+                isTrading: true,
             }
         })
-        await Axios({
-            method: 'post', url: '/nfts/'+data.nftDetail.tokenId,
-            data:{
-                tokenId: data.nftDetail.tokenId,
-                custodian: data.nftDetail.custodian,
-                status: 'forRent',
-            }
-        })
+        // await Axios({
+        //     method: 'post', url: '/nfts/'+data.nftDetail.tokenId,
+        //     data:{
+        //         tokenId: data.nftDetail.tokenId,
+        //         custodian: data.nftDetail.custodian,
+        //         status: 'forRent',
+        //     }
+        // })
         return response;
     } catch (err) {
         console.log(err);
     }
 };
 
-export const getListingDetail = async (account,tokenId) => {
+export const getListingSaleDetail = async (account,tokenId) => {
     try {
         const response = await Axios({
             method: 'get', url: '/listings/'+account,
             params:{
                 tokenId: tokenId,
-                isTrading: false,
+                isTrading: true,
             }
         })
         console.log(response)
@@ -116,10 +115,13 @@ export const getListingDetail = async (account,tokenId) => {
     }
 }
 
-export const cancelListing = async (listing) => {
+export const cancelListingSale = async (listing) => {
     try {
         const response = await Axios({
             method: 'delete', url: '/listings/'+listing.tokenId,
+            params:{
+                isTrading: true,
+            }
         })
         return response;
     } catch (err) {
@@ -127,34 +129,32 @@ export const cancelListing = async (listing) => {
     }
 }
 
-export async function getMessageRenting (orderRight){
+export async function getMessageTrading (orderRight){
     const order = await ApiPromise.create({
         types: {
             Order: {
-                lender: 'AccountId',
-                borrower: 'AccountId',
-                fee: 'u64',
+                seller: 'AccountId',
+                buyer: 'AccountId',
+                price: 'u64',
                 token: 'Vec<u8>',
-                due_date: 'u64',
-                paid_type: 'u64'
+                due_date:'u64'
             }        }
     });
     const due_date = new Date(orderRight.due_date).getTime()/1000;
     const fee = Number(orderRight.fee)*(10**12);
     const orderRental = order.createType('Order', {
-        lender: orderRight.lenderAddress,
-        borrower: orderRight.borrowerAddress,
-        fee: fee,
+        seller: orderRight.lenderAddress,
+        buyer: orderRight.borrowerAddress,
+        price: fee,
         token: orderRight.tokenId,
-        due_date: due_date,
-        paid_type: orderRight.paid_type
+        due_date: due_date
     })
     const message = u8aToHex(stringToU8a(orderRental));
     console.log(orderRental, message)
     return message;
 }
 
-export const makeOffer = async (account,data) => {
+export const makeOfferTrading = async (account,data) => {
     const extensions = await web3Enable('NFT.owl');
     if (extensions.length === 0) {
         // no extension installed, or the user did not accept the authorization
@@ -164,23 +164,21 @@ export const makeOffer = async (account,data) => {
     const order = await ApiPromise.create({
         types: {
             Order: {
-                lender: 'AccountId',
-                borrower: 'AccountId',
-                fee: 'u64',
+                seller: 'AccountId',
+                buyer: 'AccountId',
+                price: 'u64',
                 token: 'Vec<u8>',
-                due_date: 'u64',
-                paid_type: 'u64'
+                due_date: 'u64'
             }        }
     });
     const due_date = new Date(data.due_date).getTime()/1000;
     const fee = Number(data.fee)*(10**12);
     const offer = order.createType('Order', {
-        lender: data.owner,
-        borrower: account.address,
-        fee: fee,
+        seller: data.owner,
+        buyer: account.address,
+        price: fee,
         token: data.tokenId,
-        due_date: due_date,
-        paid_type: data.paid_type
+        due_date:due_date
     })
     const message = u8aToHex(stringToU8a(offer));
 
@@ -206,10 +204,9 @@ export const makeOffer = async (account,data) => {
                         tokenId: data.tokenId,
                         fee: data.fee,
                         due_date: data.due_date,
-                        paid_type: data.paid_type,
                         message: message,
                         signature: signature,
-                        isTrading: false,
+                        isTrading: true,
                     }
                 })
 
@@ -231,7 +228,6 @@ export const makeOffer = async (account,data) => {
                 tokenId: data.tokenId,
                 fee: data.fee,
                 due_date: data.due_date,
-                paid_type: data.paid_type,
                 message: message,
                 signature: signature,
             }

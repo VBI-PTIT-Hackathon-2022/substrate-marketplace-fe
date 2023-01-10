@@ -122,6 +122,9 @@ export const cancelListing = async (listing) => {
     try {
         const response = await Axios({
             method: 'delete', url: '/listings/'+listing.tokenId,
+            params:{
+                isTrading: false,
+            }
         })
         return response;
     } catch (err) {

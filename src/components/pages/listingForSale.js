@@ -3,8 +3,8 @@ import Clock from "../components/Clock";
 import Footer from '../components/footer';
 import { createGlobalStyle } from 'styled-components';
 import {useLocation, useNavigate} from "react-router-dom";
-import {saveListingNFT} from "../../store/actions/thunks/renting";
 import {useSubstrateState} from "../../substrate-lib";
+import {saveListingSaleNFT} from "../../store/actions/thunks/trading";
 
 const GlobalStyles = createGlobalStyle`
   header#myHeader.navbar.sticky.white {
@@ -69,7 +69,6 @@ function ListingForSale(Component) {
 class Listing extends Component {
     state = {
         currentAccount:null,
-        due_date: null,
         fee:null,
         nftDetail:null,
         navigate:null
@@ -157,7 +156,7 @@ class Listing extends Component {
                                     <div className="spacer-10"></div>
 
                                     <input type="button" id="submit" className="btn-main" onClick={async () => {
-                                        const response = await saveListingNFT(this.state.currentAccount, this.state);
+                                        const response = await saveListingSaleNFT(this.state.currentAccount, this.state);
 
                                         if (response.statusText === "Created") {
                                             const path = "/itemDetail/" + this.state.nftDetail.tokenId;
@@ -193,7 +192,7 @@ class Listing extends Component {
                                         {this.state.fee} UNIT
                                     </div>
                                     <div className="nft__item_action">
-                                        <span>Rent NFT</span>
+                                        <span>Buy NFT</span>
                                     </div>
                                     <div className="nft__item_like">
                                         <i className="fa fa-heart"></i><span>50</span>

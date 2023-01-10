@@ -12,6 +12,7 @@ import {getListingDetail} from "../../store/actions/thunks/renting";
 import {TxButton} from "../../substrate-lib/components";
 import Checkout from "../components/Checkout";
 import CheckoutOffer from "../components/CheckoutOffer";
+import {getListingSaleDetail} from "../../store/actions/thunks/trading";
 
 const GlobalStyles = createGlobalStyle`
   header#myHeader.navbar.white {
@@ -90,6 +91,7 @@ export default function ItemDetailRedux(props) {
     const [openCheckout, setOpenCheckout] = useState(false);
     const [openCheckoutbid, setOpenCheckoutbid] = useState(false);
     const [listingDetail, setListingDetail] = useState(null);
+    const [listingSaleDetail, setListingSaleDetail] = useState(null);
     const {currentAccount} = useSubstrateState();
 
     async function getName(walletAddress) {
@@ -112,6 +114,14 @@ export default function ItemDetailRedux(props) {
         }
     }
 
+    async function getDetailTrading(account, tokenId) {
+        const data = await getListingSaleDetail(account, tokenId);
+        if (data) {
+            console.log(data)
+            setListingSaleDetail(data);
+        }
+    }
+
     useEffect(() => {
         async function fetchData() {
             await dispatch(fetchNftDetail(nftId));
@@ -121,6 +131,7 @@ export default function ItemDetailRedux(props) {
         fetchData();
         fetchDataName(nft.walletAddress,nft.custodian);
         getDetailRenting(nft.walletAddress, nftId);
+        getDetailTrading(nft.walletAddress,nftId);
     }, [dispatch, nftId, nft.walletAddress, nft.custodian]);
 
 
@@ -139,6 +150,13 @@ export default function ItemDetailRedux(props) {
                                 <Clock deadline={listingDetail.due_date}/>
                             </div>
                         </>}
+                        <br/>
+                        {listingSaleDetail && <>
+                            Listing for sale ends in
+                            <div className="de_countdown">
+                                <Clock deadline={listingSaleDetail.due_date}/>
+                            </div>
+                        </> }
                         <h2>{nft.name}</h2>
                         <div className="item_info_counts">
                             <div className="item_info_views"><i className="fa fa-eye"></i>14</div>
@@ -244,21 +262,50 @@ export default function ItemDetailRedux(props) {
                                                 </span>
                                                     </div>
                                                     <div className="p_list_info">
-                                                        Offer {offer.maker === nft.walletAddress && 'accepted'}
-                                                        <b>{offer.fee} UNIT</b> for renting due to <b>{offer.due_date}</b>
-                                                        <span>by <b>{offer.maker}</b> at {moment(offer.createdAt).format('L, LT')}</span>
+                                                        {!offer.isTrading ?
+                                                            <>
+                                                                Offer {offer.maker === nft.walletAddress && 'accepted'}
+                                                                <b>{offer.fee} UNIT</b> for renting due to <b>{offer.due_date}</b>
+                                                                <span>by <b>{offer.maker}</b> at {moment(offer.createdAt).format('L, LT')}</span>
+                                                            </>
+                                                            :
+                                                            <>
+                                                                Offer {offer.maker === nft.walletAddress && 'accepted'}
+                                                                <b>{offer.fee} UNIT</b> for buying NFT due to <b>{offer.due_date}</b>
+                                                                <span>by <b>{offer.maker}</b> at {moment(offer.createdAt).format('L, LT')}</span>
+                                                            </>
+                                                        }
+
                                                     </div>
                                                     <br/>
-                                                    <TxButton id="mintButton" className="btn-main lead mb-5" label="Accept offer"
-                                                              type="SIGNED-TX"
-                                                              setStatus={setStatus}
-                                                              attrs={{
-                                                                  palletRpc: 'renting',
-                                                                  callable: 'createRental',
-                                                                  inputParams: ["0x" + Buffer.from(currentAccount.addressRaw).toString('hex'), "0x" + Buffer.from(keyring.decodeAddress(offer.maker)).toString('hex'), offer.message, "0x000", offer.message, offer.signature],
-                                                                  paramFields: [true, true, true, true, true, true],
-                                                              }}>
-                                                    </TxButton>
+                                                    {!offer.isTrading?
+                                                        <>
+                                                            <TxButton id="mintButton" className="btn-main lead mb-5" label="Accept offer"
+                                                                      type="SIGNED-TX"
+                                                                      setStatus={setStatus}
+                                                                      attrs={{
+                                                                          palletRpc: 'renting',
+                                                                          callable: 'createRental',
+                                                                          inputParams: ["0x" + Buffer.from(currentAccount.addressRaw).toString('hex'), "0x" + Buffer.from(keyring.decodeAddress(offer.maker)).toString('hex'), offer.message, "0x000", offer.message, offer.signature],
+                                                                          paramFields: [true, true, true, true, true, true],
+                                                                      }}>
+                                                            </TxButton>
+                                                        </>
+                                                        :
+                                                        <>
+                                                            <TxButton id="mintButton" className="btn-main lead mb-5" label="Accept offer"
+                                                                      type="SIGNED-TX"
+                                                                      setStatus={setStatus}
+                                                                      attrs={{
+                                                                          palletRpc: 'trading',
+                                                                          callable: 'createTrading',
+                                                                          inputParams: ["0x" + Buffer.from(currentAccount.addressRaw).toString('hex'), "0x" + Buffer.from(keyring.decodeAddress(offer.maker)).toString('hex'), offer.message, "0x000", offer.message, offer.signature],
+                                                                          paramFields: [true, true, true, true, true, true],
+                                                                      }}>
+                                                            </TxButton>
+                                                        </>
+                                                    }
+
                                                 </div>
                                             ))}
                                         </div>
